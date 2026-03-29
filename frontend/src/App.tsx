@@ -6,6 +6,7 @@ import Signup from './pages/Signup';
 import Signin from './pages/Signin';
 import Dashboard from './pages/Dashboard';
 import Policy from './pages/Policy';
+import Admin from './pages/Admin';
 
 const queryClient = new QueryClient();
 
@@ -19,6 +20,7 @@ function App() {
           <Route path="/signin" element={<Signin />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/policy" element={<Policy />} />
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
     </QueryClientProvider>

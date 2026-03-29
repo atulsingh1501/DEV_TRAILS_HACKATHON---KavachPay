@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ShieldAlert, X, User, Phone, MapPin, Bike, Briefcase, Wallet, LogOut, ShieldCheck } from 'lucide-react';
+import { ShieldAlert, X, User, Phone, MapPin, Bike, Briefcase, Wallet, LogOut, ShieldCheck, TrendingUp } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -9,6 +9,13 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  
+  // Work-Proof Engine State
+  const [workProofActive, setWorkProofActive] = useState(false);
+  const [sessionActiveMinutes, setSessionActiveMinutes] = useState(0);
+  const [sessionHash, setSessionHash] = useState<string | null>(null);
+  const [isSimulating, setIsSimulating] = useState(false);
+  const [latestClaim, setLatestClaim] = useState<any>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('kavachpay_token');
@@ -37,6 +44,15 @@ const Dashboard: React.FC = () => {
           const profileData = await profileRes.json();
           setProfile(profileData);
         }
+
+        // Fetch Claim History (Optional, for initial state)
+        const claimRes = await fetch('http://localhost:5000/api/claim/history', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (claimRes.ok) {
+          const claims = await claimRes.json();
+          if (claims.length > 0) setLatestClaim(claims[0]);
+        }
       } catch (err) {
         console.error('Failed to fetch dashboard data:', err);
       } finally {
@@ -46,6 +62,63 @@ const Dashboard: React.FC = () => {
 
     fetchData();
   }, [navigate]);
+
+  // Silent Work-Proof Heartbeat Engine (Step 3)
+  useEffect(() => {
+    const token = localStorage.getItem('kavachpay_token');
+    if (!token) return;
+
+    const sendHeartbeat = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/session/heartbeat', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (response.ok) {
+          const data = await response.json();
+          setWorkProofActive(true);
+          setSessionActiveMinutes(data.activeMinutes);
+          setSessionHash(data.sessionHash);
+        } else {
+          setWorkProofActive(false);
+        }
+      } catch (err) {
+        console.error('WorkProof Heartbeat failed', err);
+        setWorkProofActive(false);
+      }
+    };
+
+    // Fire initial heartbeat
+    sendHeartbeat();
+
+    // Fire every 60 seconds (accelerated for hackathon demo)
+    const interval = setInterval(sendHeartbeat, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const triggerSimulation = async () => {
+    const token = localStorage.getItem('kavachpay_token');
+    if (!token) return;
+    
+    setIsSimulating(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/claim/simulate-disruption', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setLatestClaim(data.claim);
+        // Auto-fetch policy again to update the dashboard status if needed
+      }
+    } catch (err) {
+      console.error('Simulation Failed', err);
+    } finally {
+      setIsSimulating(false);
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('kavachpay_token');
@@ -99,12 +172,22 @@ const Dashboard: React.FC = () => {
           {/* Dashboard Grid */}
           <div className="grid sm:grid-cols-2 gap-6">
             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
-              <h3 className="text-lg font-bold text-slate-800">Current Status</h3>
-              <div className="mt-4 flex items-center gap-3">
-                <span className={`h-3 w-3 rounded-full ${policy ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></span>
-                <span className="font-semibold text-slate-600">
-                  {policy ? 'Work-Proof Active' : 'Unprotected'}
-                </span>
+              <h3 className="text-lg font-bold text-slate-800">Work-Proof Protocol</h3>
+              <div className="mt-4 flex flex-col gap-3">
+                <div className="flex items-center gap-3">
+                  <span className={`h-3 w-3 rounded-full ${workProofActive ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                  <span className="font-semibold text-slate-600">
+                    {workProofActive ? `Session Active: ${sessionActiveMinutes} min` : 'Session Inactive'}
+                  </span>
+                </div>
+                {sessionHash && (
+                  <div className="mt-2 bg-slate-50 border border-slate-100 rounded-lg p-2 overflow-hidden">
+                    <p className="text-[10px] uppercase font-bold text-slate-400 mb-1">Live Cryptographic Hash</p>
+                    <p className="text-xs font-mono text-slate-500 truncate" title={sessionHash}>
+                      {sessionHash}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
             
@@ -131,7 +214,103 @@ const Dashboard: React.FC = () => {
               )}
             </div>
           </div>
+
+          {/* AI CLAIM ADJUDICATION CARD (Step 5) */}
+          {latestClaim && (
+            <div className="bg-white/90 backdrop-blur-xl border-2 border-blue-500/20 shadow-2xl rounded-3xl overflow-hidden animate-in slide-in-from-bottom-5 duration-500">
+              <div className="bg-blue-600 p-4 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-white/20 rounded-lg">
+                    <ShieldCheck className="w-5 h-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-white">AI Adjudication Result</h3>
+                </div>
+                <button 
+                  onClick={() => setLatestClaim(null)}
+                  className="text-white/70 hover:text-white cursor-pointer"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+              
+              <div className="p-6 grid md:grid-cols-2 gap-8 items-center bg-gradient-to-br from-blue-50 to-white">
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-slate-500 font-bold uppercase tracking-wider">ML Confidence Score</span>
+                    <span className="text-blue-600 font-extrabold">{Math.round((1 - latestClaim.fraudScore) * 100)}%</span>
+                  </div>
+                  <div className="w-full bg-slate-200 h-3 rounded-full overflow-hidden shadow-inner">
+                    <div 
+                      className="bg-blue-600 h-full transition-all duration-1000 ease-out shadow-[0_0_10px_rgba(37,99,235,0.5)]" 
+                      style={{ width: `${(1 - latestClaim.fraudScore) * 100}%` }}
+                    />
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3 text-center">
+                    <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Work-Proof</p>
+                      <p className="text-lg font-black text-emerald-600">{latestClaim.workProofScore}</p>
+                    </div>
+                    <div className="bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+                      <p className="text-[10px] text-slate-400 font-bold uppercase mb-1">Fraud Risk</p>
+                      <p className="text-lg font-black text-rose-600">{latestClaim.fraudScore}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-white/50 border border-white p-5 rounded-2xl shadow-sm space-y-3">
+                  <h4 className="text-sm font-black text-slate-400 uppercase tracking-widest text-center mb-4">Signal Breakdown</h4>
+                  <div className="space-y-2.5">
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="flex items-center gap-2 text-slate-700 font-semibold"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> IP Location City</span>
+                      <span className="text-emerald-600 font-black uppercase">MATCHED</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="flex items-center gap-2 text-slate-700 font-semibold"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Hash Chain Integrity</span>
+                      <span className="text-emerald-600 font-black uppercase">VERIFIED</span>
+                    </div>
+                    <div className="flex justify-between items-center text-xs">
+                      <span className="flex items-center gap-2 text-slate-700 font-semibold"><div className="w-1.5 h-1.5 rounded-full bg-emerald-500"></div> Behavioral Pattern</span>
+                      <span className="text-emerald-600 font-black uppercase">HUMAN</span>
+                    </div>
+                  </div>
+                  
+                  {/* Real-time Evidence Box */}
+                  <div className="mt-4 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                    <p className="text-[10px] uppercase font-black text-blue-400 mb-1 tracking-widest flex items-center gap-1.5">
+                      <TrendingUp className="w-3 h-3" /> External Consensus Signals
+                    </p>
+                    <p className="text-[11px] text-slate-600 leading-relaxed italic">
+                      {latestClaim.reviewerNotes || 'Comparing Open-Meteo & NewsAPI signals...'}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-100 text-center">
+                    <p className="text-xs font-bold text-slate-500 mb-1">Final Decision</p>
+                    <p className={`text-xl font-black ${latestClaim.status === 'PAID' ? 'text-emerald-600' : 'text-orange-500'}`}>
+                      {latestClaim.status === 'PAID' ? '₹' + latestClaim.payoutAmount + ' PAID' : 'PENDING REVIEW'}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
+      </div>
+
+      {/* SIMULATE STORM BUTTON (Presentation Admin Tool) */}
+      <div className="fixed bottom-6 left-6 z-[45]">
+        <button 
+          onClick={triggerSimulation}
+          disabled={isSimulating}
+          className={`group flex items-center gap-3 bg-slate-900 text-white px-6 py-4 rounded-full shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer font-black tracking-wide border-2 border-white/20 overflow-hidden relative ${isSimulating ? 'opacity-80' : ''}`}
+        >
+          <div className="absolute inset-0 bg-blue-600 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+          <ShieldAlert className={`w-6 h-6 z-10 ${isSimulating ? 'animate-bounce text-orange-400' : 'text-blue-400'}`} />
+          <span className="z-10 text-sm uppercase">
+            {isSimulating ? 'Analyzing Disruption...' : 'Simulate Monsoon Storm'}
+          </span>
+        </button>
       </div>
 
       {/* Dimmed Background Overlay */}

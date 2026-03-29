@@ -8,6 +8,9 @@ dotenv.config();
 import authRoutes from './routes/auth.js';
 import policyRoutes from './routes/policy.js';
 import userRoutes from './routes/user.js';
+import sessionRoutes from './routes/session.js';
+import claimRoutes from './routes/claim.js';
+import adminRoutes from './routes/admin.js';
 
 dotenv.config();
 
@@ -20,6 +23,9 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/policy', policyRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/session', sessionRoutes);
+app.use('/api/claim', claimRoutes);
+app.use('/api/admin', adminRoutes);
 
 app.get('/', (req: Request, res: Response) => {
   res.send('KavachPay Backend API is running...');
