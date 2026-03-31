@@ -5,7 +5,7 @@ import prisma from '../prismaClient.js';
 import { resolveIpContext } from '../services/ipIntel.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
+const JWT_SECRET = process.env.JWT_SECRET || 'kavach_pay_secret_zero_trust_2026';
 
 router.post('/heartbeat', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
