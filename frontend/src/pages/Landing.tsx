@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Activity,
@@ -8,31 +8,7 @@ import {
   MoveRight,
   ShieldCheck,
   Star,
-  ChevronDown
 } from 'lucide-react';
-
-const faqs = [
-  {
-    q: "What is KavachPay?",
-    a: "KavachPay is India's first autonomous safety net for gig workers. We provide automated financial protection against income disruptions caused by extreme weather (rain/heat) or platform outages."
-  },
-  {
-    q: "How do autonomous payouts work?",
-    a: "We monitor real-time data from IMD and OpenWeather. When a disruption threshold is met in your specific zone (e.g., heavy rain), a 60% daily coverage payout is triggered automatically to your UPI ID."
-  },
-  {
-    q: "Do I need to file a claim manually?",
-    a: "No! Our 'Smart Trigger Engine' handles everything. Once the environmental condition is verified and your work presence is confirmed, the settlement is processed without any paperwork."
-  },
-  {
-    q: "Which platforms and cities are supported?",
-    a: "We currently support Zomato, Swiggy, Zepto, and Blinkit workers across 24+ major Indian cities, including Mumbai, Delhi, Bangalore, and Hyderabad."
-  },
-  {
-    q: "Is my data secure?",
-    a: "Absolutely. We use bank-grade encryption for all worker data. We only access the minimum information required to verify your work-proof and process your payouts."
-  }
-];
 
 const disruptionFeed = [
   'LIVE DISRUPTION INDEX',
@@ -50,45 +26,80 @@ const quickTrust = [
     title: 'Powered by IMD',
     subtitle: 'Hyper-local weather verification',
     icon: CloudRain,
+    description: 'Official weather intelligence verifies every disruption event before a payout is triggered.',
+    metricLabel: 'Data freshness',
+    metricValue: 'Every 5 min',
+    accent: 'from-cyan-500/20 via-sky-500/10 to-transparent',
   },
   {
     title: 'Instant UPI Payout',
     subtitle: 'Money in your account in seconds',
     icon: Coins,
+    description: 'Once disruption is confirmed, payout is initiated directly to your linked UPI without paperwork.',
+    metricLabel: 'Typical transfer',
+    metricValue: '< 20 sec',
+    accent: 'from-emerald-500/20 via-teal-500/10 to-transparent',
   },
   {
     title: 'No GPS Required',
     subtitle: 'We value your privacy and battery',
     icon: ShieldCheck,
+    description: 'Coverage logic uses trusted regional intelligence, not live background location tracking.',
+    metricLabel: 'Privacy mode',
+    metricValue: 'Always On',
+    accent: 'from-amber-500/20 via-orange-400/10 to-transparent',
   },
 ];
-
-const quickTrustLoop = [...quickTrust, ...quickTrust];
 
 const steps = [
   {
     id: '1',
     title: 'Register',
     text: 'Sign up in 2 minutes with your phone number and gig platform ID. No credit check needed.',
-    visual: 'bg-cyan-300/55',
+    snapshotLabel: 'Identity Sync',
+    stage: 'Onboarding',
+    eta: '2 min setup',
+    tone: 'from-sky-100 via-cyan-100 to-white',
+    borderTone: 'border-sky-200',
+    pillTone: 'bg-sky-900 text-white',
   },
   {
     id: '2',
     title: 'Work',
     text: 'Go about your day. We monitor weather, heat levels, and traffic curfews in your city 24/7.',
-    visual: 'bg-blue-900 text-white',
+    snapshotLabel: 'Live Monitoring Feed',
+    stage: 'Active Monitoring',
+    eta: '24/7 coverage',
+    tone: 'from-indigo-100 via-blue-100 to-white',
+    borderTone: 'border-indigo-200',
+    pillTone: 'bg-indigo-900 text-white',
   },
   {
     id: '3',
     title: 'Get Paid',
     text: 'If conditions prevent work, KavachPay triggers a payout automatically to your linked UPI ID.',
-    visual: 'bg-emerald-300/75',
+    snapshotLabel: 'Payout Pipeline',
+    stage: 'Claim Settlement',
+    eta: 'Instant UPI',
+    tone: 'from-emerald-100 via-teal-100 to-white',
+    borderTone: 'border-emerald-200',
+    pillTone: 'bg-emerald-800 text-white',
   },
 ];
 
 const Landing: React.FC = () => {
   const navigate = useNavigate();
-  const [openFaq, setOpenFaq] = React.useState<number | null>(null);
+  const [activeTrust, setActiveTrust] = useState(0);
+
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setActiveTrust((prev) => (prev + 1) % quickTrust.length);
+    }, 1000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
+
+  const activeTrustItem = quickTrust[activeTrust];
 
   return (
     <main className="min-h-screen bg-slate-100 text-slate-900">
@@ -106,15 +117,14 @@ const Landing: React.FC = () => {
           <div className="flex items-center gap-2 text-xs sm:gap-3 sm:text-sm">
             <button
               type="button"
-              onClick={() => navigate('/signin')}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-semibold text-slate-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 sm:rounded-xl sm:px-5 sm:py-2.5 cursor-pointer"
+              className="rounded-lg border border-slate-300 bg-white px-3 py-2 font-semibold text-slate-700 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 sm:rounded-xl sm:px-5 sm:py-2.5"
             >
               Login
             </button>
             <button
               type="button"
               onClick={() => navigate('/signup')}
-              className="rounded-lg bg-blue-900 px-3 py-2 font-semibold text-white shadow-md shadow-blue-900/35 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-800 hover:shadow-lg sm:rounded-xl sm:px-5 sm:py-2.5 cursor-pointer"
+              className="rounded-lg bg-blue-900 px-3 py-2 font-semibold text-white shadow-md shadow-blue-900/35 transition-all duration-300 hover:-translate-y-0.5 hover:bg-blue-800 hover:shadow-lg sm:rounded-xl sm:px-5 sm:py-2.5"
             >
               Sign Up
             </button>
@@ -129,17 +139,17 @@ const Landing: React.FC = () => {
           <div className="space-y-6">
             {/* Main Heading - Classic Typography */}
             <div className="space-y-1">
-              <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] text-slate-900">
+              <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] text-slate-900 sm:text-4xl">
                 Protecting India&apos;s
               </h1>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1]">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] sm:text-4xl">
                 <span className="flex w-full items-center">
-                  <span className="inline-flex w-full items-center rounded-r-full bg-blue-100 px-4 py-1.5 font-serif text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-none tracking-[0.01em] text-blue-950 md:px-7 md:py-1.5 lg:w-[calc(100%+2rem)] lg:mr-[-2rem] lg:px-10 lg:py-2">
+                  <span className="inline-flex w-full items-center rounded-r-full bg-blue-100 px-4 py-1 font-serif text-3xl font-bold leading-none tracking-[0.01em] text-blue-950 sm:px-5 sm:text-4xl md:px-7 md:py-1.5 md:text-5xl lg:w-[calc(100%+2rem)] lg:mr-[-2rem] lg:px-10 lg:py-2 lg:text-6xl">
                     Gig Income,
                   </span>
                 </span>
               </h2>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] text-slate-900">
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold leading-[1.1] text-slate-900 sm:text-4xl">
                 Automatically.
               </h2>
             </div>
@@ -158,14 +168,13 @@ const Landing: React.FC = () => {
             <div className="flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
-                onClick={() => navigate('/signup')}
-                className="w-full rounded-lg bg-blue-700 px-8 py-3.5 text-base font-semibold text-white shadow-md transition-colors duration-200 active:scale-95 hover:bg-blue-800 hover:shadow-lg sm:w-auto cursor-pointer"
+                className="w-full rounded-lg bg-blue-700 px-8 py-3 text-base font-semibold text-white shadow-md transition-colors duration-200 active:scale-95 hover:bg-blue-800 hover:shadow-lg sm:w-auto"
               >
                 Get Protected
               </button>
               <button
                 type="button"
-                className="w-full rounded-lg border-2 border-slate-300 bg-white px-8 py-3.5 text-base font-semibold text-slate-900 transition-all duration-200 active:scale-95 hover:border-slate-400 hover:bg-slate-50 sm:w-auto cursor-pointer"
+                className="w-full rounded-lg border-2 border-slate-300 bg-white px-8 py-3 text-base font-semibold text-slate-900 transition-all duration-200 active:scale-95 hover:border-slate-400 hover:bg-slate-50 sm:w-auto"
               >
                 How it Works
               </button>
@@ -314,186 +323,344 @@ const Landing: React.FC = () => {
           animation: strap-sweep 3.8s ease-in-out infinite;
         }
 
-        @keyframes trust-loop {
-          from {
-            transform: translateX(0);
+        @keyframes flow-line {
+          0% {
+            background-position: 0% 50%;
           }
-          to {
-            transform: translateX(-50%);
+          100% {
+            background-position: 200% 50%;
           }
         }
+
+        @keyframes float-soft {
+          0%,
+          100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
+        }
+
+        .float-soft {
+          animation: float-soft 4.8s ease-in-out infinite;
+        }
+
+        @keyframes orbit-spin {
+          from {
+            transform: rotate(0deg);
+          }
+          to {
+            transform: rotate(360deg);
+          }
+        }
+
+        @keyframes rise-bar {
+          0%,
+          100% {
+            transform: scaleY(0.35);
+          }
+          50% {
+            transform: scaleY(1);
+          }
+        }
+
+        @keyframes travel-dot {
+          0% {
+            left: 10%;
+            opacity: 0.2;
+          }
+          20% {
+            opacity: 1;
+          }
+          80% {
+            opacity: 1;
+          }
+          100% {
+            left: 82%;
+            opacity: 0.2;
+          }
+        }
+
       `}</style>
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-8 md:px-7 md:py-10 lg:px-10">
-        <div className="overflow-hidden rounded-[1.6rem]">
-          <div className="flex w-max min-w-full gap-4 animate-[trust-loop_24s_linear_infinite] sm:gap-5">
-            {quickTrustLoop.map(({ title, subtitle, icon: Icon }, idx) => {
-              const styleIdx = idx % quickTrust.length;
+      <section className="mx-auto w-full max-w-6xl px-4 py-10 md:px-7 md:py-12 lg:px-10">
+        <div className="relative overflow-hidden rounded-[2rem] bg-[radial-gradient(circle_at_0%_20%,rgba(186,230,253,0.5),rgba(255,255,255,0)_40%),radial-gradient(circle_at_100%_80%,rgba(153,246,228,0.35),rgba(255,255,255,0)_42%)] px-4 py-6 sm:px-7 sm:py-8 lg:px-8 lg:py-9">
+          <div className="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 sm:text-xs">Protection Engine</p>
+              <h3 className="mt-3 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Built for real disruptions, not assumptions.</h3>
+              <p className="mt-2 max-w-xl text-sm leading-7 text-slate-600 sm:text-base">
+                Transparent checks before every payout. Select a module to see how your protection stays reliable.
+              </p>
 
-              return (
-                <article
-                  key={`${title}-${idx}`}
-                  className="relative w-[82vw] max-w-[330px] shrink-0 rounded-[1.6rem] border-2 border-amber-200 bg-amber-50/75 p-5 text-center shadow-[0_18px_35px_rgba(15,23,42,0.1)] sm:w-[300px] sm:p-7 md:w-[360px] md:p-8"
-                >
-                  <div
-                    className="absolute left-0 top-0 h-1.5 w-full rounded-t-[1.45rem] bg-gradient-to-r from-amber-700 via-amber-400 to-yellow-300"
-                  />
+              <div className="mt-7 space-y-4">
+                {quickTrust.map(({ title, subtitle, icon: Icon }, idx) => {
+                  const isActive = idx === activeTrust;
 
-                  <div className="relative z-10 flex flex-col items-center">
-                    <span
-                      className="inline-flex h-11 w-11 items-center justify-center rounded-xl border border-amber-200 bg-white text-amber-900 sm:h-12 sm:w-12"
+                  return (
+                    <button
+                      key={title}
+                      type="button"
+                      onClick={() => setActiveTrust(idx)}
+                      onMouseEnter={() => setActiveTrust(idx)}
+                      className="group w-full text-left"
                     >
-                      <Icon size={18} />
-                    </span>
-                    <h3 className="mt-3 text-lg font-bold tracking-tight text-slate-900 sm:mt-4 sm:text-xl">{title}</h3>
-                    <p className="mt-2 text-xs leading-6 text-slate-600 sm:text-sm sm:leading-7 md:text-base">{subtitle}</p>
+                      <div className="flex items-start gap-4">
+                        <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-300 sm:h-11 sm:w-11 ${isActive
+                          ? 'bg-slate-900 text-white shadow-[0_8px_20px_rgba(15,23,42,0.25)]'
+                          : 'bg-white/80 text-slate-700 group-hover:bg-white'}`}>
+                          <Icon size={18} />
+                        </span>
 
-                  </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-end justify-between gap-4">
+                            <p className="text-sm font-semibold tracking-tight text-slate-900 sm:text-base">{title}</p>
+                            <span className={`h-px flex-1 transition-all duration-300 ${isActive ? 'bg-slate-900' : 'bg-slate-300 group-hover:bg-slate-500'}`} />
+                          </div>
+                          <p className="mt-1 text-xs text-slate-600 sm:text-sm">{subtitle}</p>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-                  <div
-                    className="relative z-10 mt-5 inline-flex rounded-full bg-amber-100 px-4 py-1.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-amber-800"
-                  >
-                    Active Safeguard
+            <div className="relative overflow-hidden rounded-[1.7rem] bg-slate-950 px-5 py-6 text-white sm:px-7 sm:py-8">
+              <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${activeTrustItem.accent}`} />
+              <div className="pointer-events-none absolute -right-8 top-6 h-36 w-36 rounded-full bg-white/10 blur-2xl float-soft" />
+
+              <div className="relative z-10">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:text-xs">Verification Module</p>
+                <span className="mt-5 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-white">
+                  <activeTrustItem.icon size={19} />
+                </span>
+
+                <h4 className="mt-4 text-2xl font-bold tracking-tight sm:text-3xl">{activeTrustItem.title}</h4>
+                <p className="mt-2 text-sm text-slate-100/90 sm:text-base">{activeTrustItem.subtitle}</p>
+                <p className="mt-4 text-sm leading-7 text-slate-200 sm:text-base">{activeTrustItem.description}</p>
+
+                <div className="mt-6 flex items-end justify-between gap-3 border-t border-white/20 pt-4">
+                  <div>
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:text-[11px]">{activeTrustItem.metricLabel}</p>
+                    <p className="mt-1 text-xl font-bold tracking-tight text-emerald-300 sm:text-2xl">{activeTrustItem.metricValue}</p>
                   </div>
-                </article>
-              );
-            })}
+                  <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-100 sm:text-[11px]">
+                    Live Verified
+                  </span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pb-12 pt-4 md:px-7 md:pb-14 md:pt-6 lg:px-10">
-        <div className="text-center">
+        <div className="flex flex-col gap-3 sm:gap-4">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-xs">How KavachPay Works</p>
           <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Insurance that works as
-            <span className="text-blue-900"> hard as you.</span>
+            From signup to payout,
+            <span className="text-blue-900"> designed for speed and trust.</span>
           </h2>
-          <p className="mt-2 text-sm text-slate-500">Three clear steps. One reliable safety net.</p>
+          <p className="max-w-3xl text-sm leading-7 text-slate-600 sm:text-base">
+            A guided 3-stage protection flow that keeps onboarding simple, monitoring invisible, and payout instant.
+          </p>
         </div>
 
-        <div className="relative mt-10 grid gap-5 md:grid-cols-3">
-          <span className="pointer-events-none absolute left-[33.333%] top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 text-black md:inline-flex">
-            <MoveRight size={28} strokeWidth={2.5} />
-          </span>
-          <span className="pointer-events-none absolute left-[66.666%] top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 text-black md:inline-flex">
-            <MoveRight size={28} strokeWidth={2.5} />
-          </span>
-          {steps.map((step) => {
-            const tone =
-              step.id === '1'
-                ? 'border-sky-200 bg-sky-50/60'
-                : step.id === '2'
-                  ? 'border-indigo-200 bg-indigo-50/60'
-                  : 'border-emerald-200 bg-emerald-50/60';
+        <div className="relative mt-8">
+          <div className="pointer-events-none absolute left-0 right-0 top-5 hidden h-[2px] bg-[linear-gradient(90deg,rgba(14,116,144,0.25)_0%,rgba(30,64,175,0.7)_50%,rgba(5,150,105,0.25)_100%)] bg-[length:200%_100%] animate-[flow-line_6s_linear_infinite] md:block" />
 
-            return (
-              <article
-                key={step.id}
-                className={`relative overflow-hidden rounded-[1.7rem] border-2 p-6 shadow-[0_14px_30px_rgba(15,23,42,0.08)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_36px_rgba(15,23,42,0.12)] ${tone}`}
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-80">
-                  <div className="absolute -right-10 -top-10 h-36 w-36 rounded-full bg-white/45 blur-xl" />
-                  <div className="absolute -left-8 bottom-6 h-24 w-24 rounded-full bg-white/35 blur-lg" />
-                  <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.32)_0%,rgba(255,255,255,0)_52%)]" />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-base font-bold text-white">
+          <div className="grid gap-8 md:grid-cols-3 md:gap-6">
+            {steps.map((step, idx) => (
+              <article key={step.id} className="relative md:pt-10">
+                <div className="flex items-center gap-3">
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-bold text-white shadow-[0_10px_24px_rgba(15,23,42,0.25)]">
                     {step.id}
                   </span>
-                  <span className="rounded-r-full border-l-2 border-slate-400 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-700">
-                    Step {step.id}
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">{step.stage}</p>
+                    <p className="text-sm font-semibold text-slate-900">{step.eta}</p>
+                  </div>
+                </div>
+
+                <h3 className="mt-5 text-2xl font-bold tracking-tight text-slate-900">{step.title}</h3>
+                <p className="mt-3 text-sm leading-7 text-slate-700">{step.text}</p>
+
+                <div className="relative mt-5 overflow-hidden rounded-[1.35rem]">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${step.tone} opacity-90`} />
+                  <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-white/60 blur-2xl float-soft" />
+                  <div className="relative p-3">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-600">{step.snapshotLabel}</p>
+                    <div className="mt-2 h-28 overflow-hidden rounded-[1rem] bg-white/75 p-3">
+                      {step.id === '1' ? (
+                        <div className="relative h-full rounded-xl bg-sky-50/80 p-3">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-sky-700">Quick Setup Flow</p>
+
+                          <div className="relative mt-3 h-[62px]">
+                            <span className="absolute left-3 right-3 top-1/2 h-px -translate-y-1/2 bg-sky-200" />
+
+                            <span className="absolute left-2 top-1/2 inline-flex h-4 w-4 -translate-y-1/2 items-center justify-center rounded-full border border-sky-300 bg-white" />
+                            <span className="absolute left-1/2 top-1/2 inline-flex h-4 w-4 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-sky-300 bg-white" />
+                            <span className="absolute right-2 top-1/2 inline-flex h-4 w-4 -translate-y-1/2 items-center justify-center rounded-full border border-sky-700 bg-sky-700" />
+
+                            <span className="absolute left-[10%] top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-sky-700 [animation:travel-dot_1.9s_ease-in-out_infinite]" />
+                          </div>
+
+                          <div className="mt-2 flex items-center justify-between text-[9px] font-semibold uppercase tracking-[0.09em] text-sky-700">
+                            <span>Phone</span>
+                            <span>ID</span>
+                            <span>Ready</span>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {step.id === '2' ? (
+                        <div className="relative h-full rounded-xl bg-indigo-50/80 px-3 py-2.5">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-indigo-700">Risk Signal</p>
+                          <div className="mt-2 flex h-[68px] items-end gap-1">
+                            {[0.45, 0.7, 0.55, 0.95, 0.65, 0.85, 0.5, 0.75].map((scale, barIdx) => (
+                              <span
+                                key={`bar-${barIdx}`}
+                                className="w-full origin-bottom rounded-t bg-indigo-500/75"
+                                style={{
+                                  height: `${Math.round(60 * scale)}px`,
+                                  animation: `rise-bar ${1.6 + barIdx * 0.1}s ease-in-out ${barIdx * 0.08}s infinite`,
+                                }}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null}
+
+                      {step.id === '3' ? (
+                        <div className="relative h-full rounded-xl bg-emerald-50/90 p-3">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">Settlement Rail</p>
+                          <div className="relative mt-4 h-8 rounded-full bg-white/90 px-3">
+                            <span className="absolute top-1/2 h-2.5 w-2.5 -translate-y-1/2 rounded-full bg-emerald-600 [animation:travel-dot_2.1s_ease-in-out_infinite]" />
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[9px] font-semibold uppercase tracking-[0.08em] text-emerald-700">Claim OK</span>
+                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[9px] font-semibold uppercase tracking-[0.08em] text-emerald-700">UPI Sent</span>
+                          </div>
+                        </div>
+                      ) : null}
+                    </div>
+                  </div>
+                </div>
+
+                {idx < steps.length - 1 ? (
+                  <span className="mt-6 inline-flex text-slate-400 md:hidden">
+                    <MoveRight size={18} />
                   </span>
-                </div>
-
-                <h3 className="mt-6 text-2xl font-bold tracking-tight text-slate-900">{step.title}</h3>
-                <p className="mt-4 text-sm leading-7 text-slate-700">{step.text}</p>
-
-                <div className="mt-7 rounded-2xl border border-white/80 bg-white/90 p-4 shadow-inner">
-                  {step.id === '1' ? (
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-sky-700">Registration Snapshot</p>
-                      <div className="mt-3 overflow-hidden rounded-xl border border-sky-100 bg-sky-50">
-                        <img
-                          src="/register.png"
-                          alt="Register process"
-                          className="h-20 w-full object-cover sm:h-24"
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {step.id === '2' ? (
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-indigo-700">Work Snapshot</p>
-                      <div className="mt-3 overflow-hidden rounded-xl border border-indigo-100 bg-indigo-50">
-                        <img
-                          src="/work.png"
-                          alt="Work process"
-                          className="h-20 w-full object-cover sm:h-24"
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {step.id === '3' ? (
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-emerald-700">Payout Snapshot</p>
-                      <div className="mt-3 overflow-hidden rounded-xl border border-emerald-100 bg-emerald-50">
-                        <img
-                          src="/getpaid.png"
-                          alt="Get paid process"
-                          className="h-20 w-full object-cover sm:h-24"
-                        />
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
+                ) : null}
               </article>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* Standalone FAQ Section (White Background) */}
-      <section className="py-24 bg-white relative">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-serif font-bold text-slate-900 mb-4 tracking-tight">Common Questions</h2>
-            <div className="h-1.5 w-16 bg-blue-600 mx-auto rounded-full mb-6"></div>
-          </div>
-
-          <div className="space-y-4 max-w-3xl mx-auto">
-            {faqs.map((faq, i) => (
-              <div
-                key={i}
-                className={`border-2 rounded-2xl transition-all duration-300 ${openFaq === i ? 'border-blue-600 bg-blue-50/40 shadow-sm' : 'border-slate-100 bg-white hover:border-slate-200'}`}
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full px-5 py-5 sm:px-7 sm:py-6 flex items-center justify-between text-left cursor-pointer group"
-                >
-                  <span className={`text-sm sm:text-base font-bold transition-colors ${openFaq === i ? 'text-blue-900' : 'text-slate-700 group-hover:text-slate-900'}`}>
-                    {faq.q}
-                  </span>
-                  <div className={`flex-shrink-0 ml-4 p-1 rounded-full transition-all duration-300 ${openFaq === i ? 'bg-blue-600 text-white rotate-180' : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'}`}>
-                    <ChevronDown size={18} />
-                  </div>
-                </button>
-                {openFaq === i && (
-                  <div className="px-5 pb-6 sm:px-7 sm:pb-8 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <p className="text-slate-600 leading-relaxed text-xs sm:text-sm font-medium">
-                      {faq.a}
-                    </p>
-                  </div>
-                )}
-              </div>
             ))}
           </div>
         </div>
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-4 pb-14 md:px-7 md:pb-16 lg:px-10">
+        <div className="relative mb-7 overflow-hidden rounded-[1.9rem] border border-slate-200 bg-white px-5 py-8 shadow-[0_18px_42px_rgba(15,23,42,0.08)] sm:px-7 sm:py-10">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_12%_18%,rgba(186,230,253,0.35),rgba(255,255,255,0)_45%),radial-gradient(circle_at_92%_76%,rgba(167,243,208,0.3),rgba(255,255,255,0)_42%)]" />
+
+          <div className="relative z-10 grid gap-7 lg:grid-cols-[1.05fr_0.95fr] lg:gap-8">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-xs">Operational Confidence</p>
+              <h3 className="mt-3 max-w-xl text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+                Designed like an operations center,
+                <span className="text-blue-900"> not a generic insurance page.</span>
+              </h3>
+              <p className="mt-3 max-w-lg text-sm leading-7 text-slate-600 sm:text-base">
+                Every claim path follows a professional workflow: disruption validation, policy checks, and secure payout dispatch.
+              </p>
+
+              <div className="mt-6 space-y-3">
+                <div className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-cyan-600" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Data Validation Layer</p>
+                    <p className="text-sm text-slate-600">Regional weather and disruption signals are verified before any trigger.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-indigo-600" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Policy Decision Layer</p>
+                    <p className="text-sm text-slate-600">Eligibility and safeguards are checked with minimal user effort.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3 rounded-xl bg-slate-50 px-4 py-3">
+                  <span className="mt-1 h-2 w-2 rounded-full bg-emerald-600" />
+                  <div>
+                    <p className="text-sm font-semibold text-slate-900">Payout Dispatch Layer</p>
+                    <p className="text-sm text-slate-600">Approved claims are routed instantly to your connected UPI account.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="rounded-[1.5rem] border border-slate-200 bg-slate-950 p-5 text-white sm:p-6">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300 sm:text-xs">Claim Response Timeline</p>
+
+              <div className="mt-5 space-y-4">
+                <div className="relative pl-6">
+                  <span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                  <span className="absolute left-[0.28rem] top-4 h-8 w-px bg-slate-700" />
+                  <p className="text-sm font-semibold text-white">Disruption Confirmed</p>
+                  <p className="text-xs text-slate-300">Weather and city risk feed flags an eligible event.</p>
+                </div>
+
+                <div className="relative pl-6">
+                  <span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-indigo-400" />
+                  <span className="absolute left-[0.28rem] top-4 h-8 w-px bg-slate-700" />
+                  <p className="text-sm font-semibold text-white">Coverage Matched</p>
+                  <p className="text-xs text-slate-300">Policy conditions are validated automatically in the background.</p>
+                </div>
+
+                <div className="relative pl-6">
+                  <span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                  <p className="text-sm font-semibold text-white">UPI Payout Sent</p>
+                  <p className="text-xs text-slate-300">Claim settles instantly with no paperwork queue.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-7 rounded-[1.9rem] border border-slate-200 bg-white px-5 py-7 shadow-[0_14px_34px_rgba(15,23,42,0.07)] sm:px-7 sm:py-9">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 sm:text-xs">Quick Answers</p>
+              <h3 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Common questions from gig workers</h3>
+            </div>
+            <p className="max-w-md text-sm leading-7 text-slate-600 sm:text-base">
+              Everything you need to know before getting protected with KavachPay.
+            </p>
+          </div>
+
+          <div className="mt-7 space-y-3">
+            <details className="group rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 open:bg-white sm:px-5 sm:py-4">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900 sm:text-base">When do I receive payout after disruption is verified?</summary>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Payout is initiated instantly after verification and usually reaches your UPI account in seconds.
+              </p>
+            </details>
+
+            <details className="group rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 open:bg-white sm:px-5 sm:py-4">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900 sm:text-base">Do I need to keep GPS always on for coverage?</summary>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                No. KavachPay uses trusted regional intelligence and disruption signals, so live GPS tracking is not required.
+              </p>
+            </details>
+
+            <details className="group rounded-2xl border border-slate-200 bg-slate-50/70 px-4 py-3 open:bg-white sm:px-5 sm:py-4">
+              <summary className="cursor-pointer list-none text-sm font-semibold text-slate-900 sm:text-base">Which workers can enroll in this protection?</summary>
+              <p className="mt-3 text-sm leading-7 text-slate-600">
+                Delivery partners, driver-partners, and most app-based gig workers in supported cities can enroll.
+              </p>
+            </details>
+          </div>
+        </div>
+
         <div className="rounded-[2rem] bg-gradient-to-r from-slate-950 via-slate-900 to-blue-950 px-5 py-12 text-center text-white shadow-2xl sm:px-8 sm:py-16">
           <h2 className="mx-auto max-w-2xl text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">
             Don&apos;t let the weather decide your
@@ -501,10 +668,9 @@ const Landing: React.FC = () => {
           </h2>
           <button
             type="button"
-            onClick={() => navigate('/signup')}
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-6 py-3 text-sm font-bold text-slate-900 sm:px-8 cursor-pointer"
+            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-emerald-300 px-6 py-3 text-sm font-bold text-slate-900 sm:px-8"
           >
-            Join us now
+            Join 15,000+ Workers
             <MoveRight size={14} />
           </button>
           <p className="mt-6 text-[11px] font-semibold uppercase tracking-[0.22em] text-slate-400">
