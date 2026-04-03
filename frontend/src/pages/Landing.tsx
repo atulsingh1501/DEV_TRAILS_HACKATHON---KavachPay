@@ -18,10 +18,9 @@ import {
 } from 'lucide-react';
 
 const stats = [
-  { value: '₹2.4Cr+', label: 'Payouts disbursed', description: 'to gig workers' },
   { value: '15K+', label: 'Workers protected', description: 'across India' },
   { value: '<20s', label: 'Average payout time', description: 'via UPI' },
-  { value: '24', label: 'Cities covered', description: 'and growing' },
+  { value: '5', label: 'Cities covered', description: 'and growing' },
 ];
 
 const features = [
@@ -90,6 +89,37 @@ const testimonials = [
   },
 ];
 
+const pricingPlans = [
+  {
+    name: 'Basic',
+    price: '35',
+    period: 'week',
+    coverage: '1,500',
+    features: ['Heavy Rain Protection', 'Extreme Heat Coverage', 'Instant UPI Payouts'],
+    color: 'emerald',
+    cta: 'Get Basic',
+  },
+  {
+    name: 'Standard',
+    price: '55',
+    period: 'week',
+    coverage: '2,000',
+    features: ['Everything in Basic', 'Official City Curfews', 'Air Quality (AQI) Alerts', 'Priority Support'],
+    recommended: true,
+    color: 'emerald',
+    cta: 'Get Protected',
+  },
+  {
+    name: 'Premium',
+    price: '75',
+    period: 'week',
+    coverage: '3,000',
+    features: ['Everything in Standard', 'Flood & Storm Surge', 'Road Closures/Restricted Zones', 'Earnings Protection Plus'],
+    color: 'emerald',
+    cta: 'Go Premium',
+  },
+];
+
 const faqs = [
   {
     question: 'When do I receive payout after a disruption?',
@@ -114,8 +144,8 @@ const disruptionFeed = [
   'Mumbai: Heavy Rain (Active)',
   'Delhi: Heat Alert (Normal)',
   'Bengaluru: Thunderstorm (Active)',
-  'Pune: Clear',
   'Chennai: Cyclone Watch',
+  'Hyderabad: Moderate Rain',
 ];
 
 const Landing: React.FC = () => {
@@ -139,9 +169,7 @@ const Landing: React.FC = () => {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
           </span>
-          <span className="text-stone-300">Now live in 24 cities</span>
-          <span className="text-stone-500">•</span>
-          <span className="font-medium">₹2.4 Crore+ disbursed to workers</span>
+          <span className="text-stone-300">Now live in Mumbai, Delhi, Bengaluru, Chennai & Hyderabad</span>
           <ChevronRight className="w-4 h-4 text-stone-400" />
         </div>
       </div>
@@ -162,7 +190,7 @@ const Landing: React.FC = () => {
 
             {/* Nav Links - Desktop */}
             <div className="hidden md:flex items-center gap-8">
-              <button onClick={() => navigate('/howitworks')} className="text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">
+              <button onClick={() => navigate('/howitworks')} className="text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors cursor-pointer">
                 How it Works
               </button>
               <a href="#features" className="text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">
@@ -180,13 +208,13 @@ const Landing: React.FC = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/signin')}
-                className="text-sm font-semibold text-stone-700 hover:text-stone-900 transition-colors px-4 py-2"
+                className="text-sm font-semibold text-stone-700 hover:text-stone-900 transition-colors px-4 py-2 cursor-pointer"
               >
                 Log in
               </button>
               <button
                 onClick={() => navigate('/signup')}
-                className="bg-stone-900 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-stone-800 transition-all hover:shadow-lg active:scale-[0.98]"
+                className="bg-stone-900 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-stone-800 transition-all hover:shadow-lg active:scale-[0.98] cursor-pointer"
               >
                 Get Started
               </button>
@@ -207,12 +235,6 @@ const Landing: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             {/* Left Content */}
             <div className="max-w-2xl">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-full px-4 py-1.5 mb-6">
-                <Shield className="w-4 h-4 text-emerald-600" />
-                <span className="text-sm font-medium text-emerald-700">Income Protection for Gig Workers</span>
-              </div>
-
               {/* Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1] text-balance">
                 <span className="text-stone-900">Protecting India&apos;s</span>
@@ -235,14 +257,14 @@ const Landing: React.FC = () => {
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => navigate('/signup')}
-                  className="group inline-flex items-center justify-center gap-2 bg-stone-900 text-white text-base font-semibold px-8 py-4 rounded-full hover:bg-stone-800 transition-all hover:shadow-xl active:scale-[0.98]"
+                  className="group inline-flex items-center justify-center gap-2 bg-stone-900 text-white text-base font-semibold px-8 py-4 rounded-full hover:bg-stone-800 transition-all hover:shadow-xl active:scale-[0.98] cursor-pointer"
                 >
                   Get Protected Now
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <button
                   onClick={() => navigate('/howitworks')}
-                  className="inline-flex items-center justify-center gap-2 bg-white text-stone-900 text-base font-semibold px-8 py-4 rounded-full border-2 border-stone-200 hover:border-stone-300 hover:bg-stone-50 transition-all"
+                  className="inline-flex items-center justify-center gap-2 bg-white text-stone-900 text-base font-semibold px-8 py-4 rounded-full border-2 border-stone-200 hover:border-stone-300 hover:bg-stone-50 transition-all cursor-pointer"
                 >
                   See How it Works
                 </button>
@@ -298,7 +320,7 @@ const Landing: React.FC = () => {
               <div className="absolute -top-4 -right-4 bg-stone-900 text-white rounded-2xl px-5 py-3 shadow-xl">
                 <div className="flex items-center gap-2">
                   <Globe className="w-5 h-5 text-emerald-400" />
-                  <span className="text-sm font-semibold">24 Cities Live</span>
+                  <span className="text-sm font-semibold">5 Cities Live</span>
                 </div>
               </div>
             </div>
@@ -367,7 +389,7 @@ const Landing: React.FC = () => {
                     key={idx}
                     onClick={() => setActiveFeature(idx)}
                     onMouseEnter={() => setActiveFeature(idx)}
-                    className={`w-full text-left p-6 rounded-2xl transition-all duration-300 ${
+                    className={`w-full text-left p-6 rounded-2xl transition-all duration-300 cursor-pointer ${
                       isActive 
                         ? 'bg-white shadow-xl border-2 border-emerald-200' 
                         : 'bg-white/50 border-2 border-transparent hover:bg-white hover:shadow-md'
@@ -506,12 +528,101 @@ const Landing: React.FC = () => {
 
                 <button
                   onClick={() => navigate('/signup')}
-                  className="mt-8 group inline-flex items-center gap-2 bg-white text-stone-900 text-base font-semibold px-8 py-4 rounded-full hover:bg-stone-100 transition-all"
+                  className="mt-8 group inline-flex items-center gap-2 bg-white text-stone-900 text-base font-semibold px-8 py-4 rounded-full hover:bg-stone-100 transition-all cursor-pointer"
                 >
                   Start Your Protection
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 lg:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wide mb-3">Pricing Plans</p>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-stone-900 tracking-tight mb-6">
+              Simple, affordable protection for every worker
+            </h2>
+            <p className="text-lg text-stone-600 leading-relaxed">
+              Choose the plan that fits your work schedule and coverage needs. 
+              No hidden fees, no long-term contracts.
+            </p>
+          </div>
+
+          {/* Pricing Grid */}
+          <div className="grid md:grid-cols-3 gap-8 items-stretch">
+            {pricingPlans.map((plan, idx) => (
+              <div 
+                key={idx}
+                className={`relative flex flex-col p-8 rounded-[2.5rem] transition-all duration-300 ${
+                  plan.recommended 
+                    ? 'bg-white shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] border-2 border-emerald-500 scale-105 z-10' 
+                    : 'bg-white border border-stone-200 hover:border-emerald-200 hover:shadow-xl'
+                }`}
+              >
+                {plan.recommended && (
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-emerald-500 text-white text-sm font-bold px-6 py-2 rounded-full uppercase tracking-wider shadow-lg">
+                    Best Value
+                  </div>
+                )}
+                
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-2xl font-bold text-stone-900">{plan.name}</h3>
+                    {plan.recommended && (
+                      <span className="bg-emerald-50 text-emerald-600 p-1.5 rounded-lg border border-emerald-100">
+                        <TrendingUp className="w-5 h-5" />
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-5xl font-bold text-stone-900">₹{plan.price}</span>
+                    <span className="text-stone-500 font-medium">/{plan.period}</span>
+                  </div>
+                </div>
+
+                <div className="mb-10 p-6 bg-emerald-50/50 rounded-3xl border border-emerald-100/50">
+                  <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest mb-1">Max Protection</p>
+                  <p className="text-3xl font-bold text-emerald-700">₹{plan.coverage}</p>
+                  <p className="text-xs text-emerald-600/70 mt-1">Automatic payout per event</p>
+                </div>
+
+                <ul className="flex-1 space-y-5 mb-12">
+                  {plan.features.map((feature, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <div className="mt-1 bg-emerald-500 rounded-full p-0.5 shadow-sm">
+                        <Check className="w-3.5 h-3.5 text-white" />
+                      </div>
+                      <span className="text-base text-stone-600 leading-tight">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <button
+                  onClick={() => navigate('/signup')}
+                  className={`w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-[0.98] cursor-pointer ${
+                    plan.recommended
+                      ? 'bg-emerald-500 text-white hover:bg-emerald-600 shadow-xl shadow-emerald-200 hover:-translate-y-1'
+                      : 'bg-stone-900 text-white hover:bg-stone-800 hover:shadow-lg'
+                  }`}
+                >
+                  {plan.cta}
+                </button>
+              </div>
+            ))}
+          </div>
+          
+          <div className="mt-16 text-center">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-stone-100 rounded-full border border-stone-200">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <p className="text-stone-600 text-sm font-medium">
+                All plans include IMD verification and under 20-second UPI payouts.
+              </p>
             </div>
           </div>
         </div>
@@ -570,7 +681,7 @@ const Landing: React.FC = () => {
               <div key={idx} className="border border-stone-200 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition-colors cursor-pointer"
                 >
                   <span className="text-lg font-semibold text-stone-900 pr-4">{faq.question}</span>
                   <ChevronRight className={`w-5 h-5 text-stone-400 transition-transform ${openFaq === idx ? 'rotate-90' : ''}`} />
@@ -606,7 +717,7 @@ const Landing: React.FC = () => {
               <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
                 <button
                   onClick={() => navigate('/signup')}
-                  className="group inline-flex items-center justify-center gap-2 bg-emerald-400 text-stone-900 text-lg font-semibold px-10 py-4 rounded-full hover:bg-emerald-300 transition-all"
+                  className="group inline-flex items-center justify-center gap-2 bg-emerald-400 text-stone-900 text-lg font-semibold px-10 py-4 rounded-full hover:bg-emerald-300 transition-all cursor-pointer"
                 >
                   Get Started Free
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -614,7 +725,7 @@ const Landing: React.FC = () => {
               </div>
 
               <p className="mt-8 text-sm font-medium text-stone-400 uppercase tracking-wide">
-                Trusted across 24 Indian cities
+                Trusted across 5 Indian cities
               </p>
             </div>
           </div>

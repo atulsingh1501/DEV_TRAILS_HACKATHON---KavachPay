@@ -153,15 +153,23 @@ export default function HowItWorks() {
   ];
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans">
+    <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative overflow-hidden">
+      {/* Background Logo Watermark - Adjusted for visibility */}
+      <div className="fixed inset-0 pointer-events-none flex items-center justify-center opacity-[0.06] -z-10">
+        <img
+          src="/KavachPay_logo.png"
+          alt=""
+          className="w-[800px] h-[800px] object-contain select-none scale-125"
+        />
+      </div>
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <button onClick={() => navigate('/')} className="flex items-center gap-3">
+            <button onClick={() => navigate('/')} className="flex items-center gap-3 cursor-pointer">
               <img
-                src="/KavachPay_logo.png"
+                src="/KavachPay_logo.png  "
                 alt="KavachPay"
                 className="h-9 w-9 object-contain"
               />
@@ -171,7 +179,7 @@ export default function HowItWorks() {
             {/* Back Button */}
             <button
               onClick={() => navigate(-1)}
-              className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors"
+              className="inline-flex items-center gap-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               Back
@@ -206,7 +214,7 @@ export default function HowItWorks() {
       </section>
 
       {/* Main Process Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white/40 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -221,17 +229,16 @@ export default function HowItWorks() {
             {mainProcess.map((step, idx) => {
               const Icon = step.icon;
               const isActive = activeStep === idx;
-              
+
               return (
                 <button
                   key={idx}
                   onClick={() => setActiveStep(idx)}
                   onMouseEnter={() => setActiveStep(idx)}
-                  className={`text-left rounded-3xl border-2 p-8 transition-all duration-300 ${
-                    isActive
+                  className={`text-left rounded-3xl border-2 p-8 transition-all duration-300 cursor-pointer ${isActive
                       ? `${step.color} shadow-xl`
                       : 'bg-white border-stone-200 hover:border-stone-300 hover:shadow-md'
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center gap-4 mb-6">
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${step.iconBg}`}>
@@ -261,7 +268,7 @@ export default function HowItWorks() {
       </section>
 
       {/* Complete Flow Section */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-20 bg-stone-50/40 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -301,7 +308,7 @@ export default function HowItWorks() {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white/40 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto mb-16">
@@ -333,7 +340,7 @@ export default function HowItWorks() {
       </section>
 
       {/* Example Section */}
-      <section className="py-20 bg-stone-50">
+      <section className="py-20 bg-stone-50/40 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-emerald-50 to-cyan-50 rounded-3xl border border-emerald-200 p-8 lg:p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
@@ -395,7 +402,7 @@ export default function HowItWorks() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white/40 backdrop-blur-sm relative z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Section Header */}
           <div className="text-center mb-16">
@@ -411,7 +418,7 @@ export default function HowItWorks() {
               <div key={idx} className="border border-stone-200 rounded-2xl overflow-hidden">
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition-colors"
+                  className="w-full flex items-center justify-between p-6 text-left hover:bg-stone-50 transition-colors cursor-pointer"
                 >
                   <span className="text-lg font-semibold text-stone-900 pr-4">{item.q}</span>
                   <ChevronDown className={`w-5 h-5 text-stone-400 transition-transform flex-shrink-0 ${openFaq === idx ? 'rotate-180' : ''}`} />
@@ -445,7 +452,7 @@ export default function HowItWorks() {
 
               <button
                 onClick={() => navigate('/signup')}
-                className="mt-10 group inline-flex items-center gap-2 bg-emerald-400 text-stone-900 text-lg font-semibold px-10 py-4 rounded-full hover:bg-emerald-300 transition-all"
+                className="mt-10 group inline-flex items-center gap-2 bg-emerald-400 text-stone-900 text-lg font-semibold px-10 py-4 rounded-full hover:bg-emerald-300 transition-all cursor-pointer"
               >
                 Sign Up Now
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
