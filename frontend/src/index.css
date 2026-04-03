@@ -1,5 +1,35 @@
 @import "tailwindcss";
 
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  overflow-x: clip;
+}
+
+img,
+video,
+svg {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+* {
+  min-width: 0;
+}
+
 @keyframes razorpay-jiggle {
   0%, 100% { transform: translate(0, 0) scale(1); }
   10% { transform: translate(-2px, -1px) scale(1.02); }

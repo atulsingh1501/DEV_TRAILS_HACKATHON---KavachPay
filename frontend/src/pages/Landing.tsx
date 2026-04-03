@@ -158,7 +158,7 @@ const Landing: React.FC = () => {
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans">
       {/* Announcement Bar */}
       <div className="bg-stone-900 text-white py-2.5 px-4 text-center">
-        <div className="flex items-center justify-center gap-2 text-sm">
+        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm flex-wrap">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
@@ -171,9 +171,9 @@ const Landing: React.FC = () => {
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex flex-col gap-3 py-4 sm:h-16 sm:flex-row sm:items-center sm:justify-between">
             {/* Logo */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <img
                 src="/KavachPay_logo.png"
                 alt="KavachPay"
@@ -202,13 +202,13 @@ const Landing: React.FC = () => {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => navigate('/signin')}
-                className="text-sm font-semibold text-stone-700 hover:text-stone-900 transition-colors px-4 py-2 cursor-pointer"
+                className="text-sm font-semibold text-stone-700 hover:text-stone-900 transition-colors px-3 sm:px-4 py-2 cursor-pointer"
               >
                 Log in
               </button>
               <button
                 onClick={() => navigate('/signup')}
-                className="bg-stone-900 text-white text-sm font-semibold px-5 py-2.5 rounded-full hover:bg-stone-800 transition-all hover:shadow-lg active:scale-[0.98] cursor-pointer"
+                className="bg-stone-900 text-white text-sm font-semibold px-4 sm:px-5 py-2.5 rounded-full hover:bg-stone-800 transition-all hover:shadow-lg active:scale-[0.98] cursor-pointer"
               >
                 Get Started
               </button>
@@ -218,7 +218,7 @@ const Landing: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden pt-16 pb-24 lg:pt-24 lg:pb-32">
+      <section className="relative overflow-hidden pt-12 pb-20 sm:pt-16 sm:pb-24 lg:pt-24 lg:pb-32">
         {/* Background Pattern */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-40" />
@@ -226,7 +226,7 @@ const Landing: React.FC = () => {
         </div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
             {/* Left Content */}
             <div className="max-w-2xl">
               {/* Headline */}
@@ -288,13 +288,13 @@ const Landing: React.FC = () => {
                 <img
                   src="/gigworker.png"
                   alt="Gig worker protected by KavachPay"
-                  className="w-full h-[480px] lg:h-[560px] object-cover"
+                  className="w-full h-[320px] sm:h-[420px] lg:h-[560px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-stone-900/60 via-transparent to-transparent" />
                 
                 {/* Floating Card - Payout */}
-                <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
-                  <div className="flex items-center gap-4">
+                <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 bg-white/95 backdrop-blur-sm rounded-2xl p-4 shadow-lg">
+                  <div className="flex items-center gap-3 sm:gap-4">
                     <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
                       <TrendingUp className="w-6 h-6 text-emerald-600" />
                     </div>
@@ -383,7 +383,7 @@ const Landing: React.FC = () => {
             </div>
 
             {/* Feature Detail Card */}
-            <div className="bg-stone-900 rounded-3xl p-8 lg:p-10 text-white sticky top-24">
+            <div className="bg-stone-900 rounded-3xl p-6 sm:p-8 lg:p-10 text-white lg:sticky lg:top-24">
               <div className="mb-6">
                 <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Verification Module</p>
               </div>
@@ -430,7 +430,7 @@ const Landing: React.FC = () => {
           </div>
 
           {/* Steps */}
-          <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-12">
             {steps.map((step, idx) => {
               const Icon = step.icon;
               return (
@@ -440,7 +440,7 @@ const Landing: React.FC = () => {
                     <div className="hidden md:block absolute top-10 left-[60%] w-full h-0.5 bg-gradient-to-r from-emerald-300 to-stone-200" />
                   )}
                   
-                  <div className="relative bg-stone-50 rounded-3xl p-8 hover:shadow-xl transition-shadow">
+                  <div className="relative bg-stone-50 rounded-3xl p-6 sm:p-8 hover:shadow-xl transition-shadow">
                     <div className="flex items-center gap-4 mb-6">
                       <span className="text-5xl font-bold text-stone-200">{step.number}</span>
                       <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center">
@@ -459,7 +459,7 @@ const Landing: React.FC = () => {
 
       {/* Video Section */}
       <section className="relative">
-        <div className="relative h-[500px] lg:h-[600px] overflow-hidden">
+        <div className="relative h-[360px] sm:h-[460px] lg:h-[600px] overflow-hidden">
           <video
             autoPlay
             muted
@@ -526,13 +526,13 @@ const Landing: React.FC = () => {
           </div>
 
           {/* Pricing Grid */}
-          <div className="grid md:grid-cols-3 gap-8 items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
             {pricingPlans.map((plan, idx) => (
               <div 
                 key={idx}
                 className={`relative flex flex-col p-8 rounded-[2.5rem] transition-all duration-300 ${
                   plan.recommended 
-                    ? 'bg-white shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] border-2 border-emerald-500 scale-105 z-10' 
+                    ? 'bg-white shadow-[0_32px_64px_-16px_rgba(16,185,129,0.1)] border-2 border-emerald-500 md:scale-105 z-10' 
                     : 'bg-white border border-stone-200 hover:border-emerald-200 hover:shadow-xl'
                 }`}
               >
@@ -611,7 +611,7 @@ const Landing: React.FC = () => {
           </div>
 
           {/* Testimonial Cards */}
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             {testimonials.map((testimonial, idx) => (
               <div key={idx} className="bg-white rounded-3xl p-8 shadow-sm hover:shadow-xl transition-shadow">
                 {/* Stars */}
@@ -706,7 +706,7 @@ const Landing: React.FC = () => {
       {/* Footer */}
       <footer className="bg-stone-100 border-t border-stone-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">

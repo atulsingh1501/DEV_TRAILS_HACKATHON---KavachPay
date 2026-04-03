@@ -160,8 +160,8 @@ const Signup: React.FC = () => {
 
   return (
     <main className="min-h-screen bg-[#f8fafc] text-slate-900 font-inter">
-      <div className="mx-auto w-full max-w-2xl px-4 pb-12 pt-8">
-        <div className="flex items-center justify-between mb-8">
+      <div className="mx-auto w-full max-w-2xl px-4 pb-12 pt-6 sm:pt-8">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
           <Link to="/" className="flex items-center gap-2 text-2xl font-black italic tracking-tighter text-blue-900 group">
             <img src="/KavachPay_logo.png" alt="Logo" className="h-8 w-8 object-contain transition-transform duration-300 group-hover:scale-110" />
             <span>KAVACH<span className="text-blue-600">PAY</span></span>
@@ -267,7 +267,7 @@ const Signup: React.FC = () => {
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Enter 6-Digit Code</label>
                       {countdown > 0 && <span className="text-[10px] font-bold text-rose-500 animate-pulse uppercase tracking-widest">Expires in {countdown}s</span>}
                     </div>
-                    <div className="grid grid-cols-6 gap-1.5 sm:gap-3">
+                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3">
                       {formData.otp.map((digit, idx) => (
                         <input
                           key={idx}

@@ -93,10 +93,10 @@ const Signin: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] text-slate-900 font-inter flex items-center justify-center p-4">
+    <main className="min-h-screen bg-[#f8fafc] text-slate-900 font-inter flex items-start sm:items-center justify-center p-4 py-6 sm:py-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center justify-center gap-2 text-3xl font-black italic tracking-tighter text-blue-900 group">
+          <Link to="/" className="inline-flex items-center justify-center gap-2 text-2xl sm:text-3xl font-black italic tracking-tighter text-blue-900 group">
             <img src="/KavachPay_logo.png" alt="Logo" className="h-10 w-10 object-contain transition-transform duration-300 group-hover:scale-110" />
             <span>KAVACH<span className="text-blue-600">PAY</span></span>
           </Link>
@@ -104,7 +104,7 @@ const Signin: React.FC = () => {
         </div>
 
         <div className="bg-white rounded-3xl border border-slate-200 shadow-2xl overflow-hidden">
-          <div className="p-8">
+          <div className="p-6 sm:p-8">
             {error && (
               <div className="mb-6 bg-rose-50 border border-rose-100 text-rose-600 px-4 py-3 rounded-2xl text-sm font-medium animate-in fade-in zoom-in">
                 {error}
@@ -151,7 +151,7 @@ const Signin: React.FC = () => {
                       <label className="text-xs font-bold text-slate-700 uppercase tracking-wide">Enter 6-Digit Code</label>
                       {countdown > 0 && <span className="text-[10px] font-bold text-rose-500 animate-pulse uppercase tracking-widest">Expires in {countdown}s</span>}
                     </div>
-                    <div className="grid grid-cols-6 gap-1.5 sm:gap-2">
+                    <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-2">
                       {otp.map((digit, idx) => (
                         <input 
                           key={idx}

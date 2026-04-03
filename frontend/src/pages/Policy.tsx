@@ -457,7 +457,7 @@ const Policy = () => {
 
   if (activePolicy) {
     return (
-      <main className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-6">
+      <main className="min-h-screen bg-stone-50 flex flex-col items-center justify-center p-4 sm:p-6">
         <div className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-stone-100 overflow-hidden">
           <div className="bg-stone-900 p-8 text-center">
             <div className="w-20 h-20 mx-auto bg-emerald-500/20 rounded-full flex items-center justify-center mb-4">
@@ -554,7 +554,7 @@ const Policy = () => {
     <main className="min-h-screen bg-stone-50 text-stone-900">
       {/* Navigation */}
       <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center gap-4">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
           <button
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-700 transition cursor-pointer"
@@ -568,7 +568,7 @@ const Policy = () => {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-6 py-12">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 sm:py-12">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-sm font-medium mb-6">
@@ -581,7 +581,7 @@ const Policy = () => {
         </div>
 
         {/* Plans Grid */}
-        <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
           {plans.map((plan) => (
             <div 
               key={plan.tier}

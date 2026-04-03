@@ -584,8 +584,8 @@ const Admin: React.FC = () => {
     <div className="min-h-screen bg-stone-950 text-stone-100">
       {/* Admin Navigation */}
       <nav className="sticky top-0 z-30 bg-stone-900/80 backdrop-blur-xl border-b border-stone-800">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-4 min-w-0">
             <button onClick={() => navigate('/dashboard')} className="p-2 rounded-xl bg-stone-800 text-stone-400 hover:bg-stone-700 hover:text-white transition cursor-pointer">
               <ArrowLeft className="w-5 h-5" />
             </button>
@@ -599,7 +599,7 @@ const Admin: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 self-end sm:self-auto">
             <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded-full">
               <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
               <span className="text-xs font-semibold text-emerald-400">System Online</span>
@@ -611,9 +611,9 @@ const Admin: React.FC = () => {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8">
         {/* Stats Grid */}
-        <section className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
           <div className="bg-stone-900 border border-stone-800 rounded-2xl p-5 hover:border-stone-700 transition group">
             <div className="flex items-center justify-between mb-4">
               <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center group-hover:scale-110 transition">
@@ -677,7 +677,7 @@ const Admin: React.FC = () => {
               <h3 className="text-lg font-bold text-white">Treasury Controls</h3>
               <p className="text-sm text-stone-500">Manage demonstration funds</p>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <input
                 type="number"
                 min={1}
@@ -703,7 +703,7 @@ const Admin: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid sm:grid-cols-3 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="bg-stone-800/50 border border-stone-700/50 rounded-xl p-4">
               <p className="text-xs font-semibold text-stone-500 uppercase mb-1">Inflow</p>
               <p className="text-xl font-bold text-emerald-400">Rs. {treasury?.inflow?.toLocaleString() || 0}</p>
@@ -751,7 +751,7 @@ const Admin: React.FC = () => {
         </section>
 
         {/* Analytics Grid */}
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Chart Placeholder */}
           <div className="lg:col-span-2 bg-stone-900 border border-stone-800 rounded-2xl p-6">
             <div className="flex justify-between items-center mb-8">

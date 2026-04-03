@@ -271,7 +271,7 @@ function ClaimCard({ claim }: { claim: any }) {
   return (
     <div className="bg-white border border-stone-100 rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all duration-200">
       {/* Header */}
-      <div className="p-5 flex items-start justify-between gap-4">
+      <div className="p-5 flex flex-col sm:flex-row items-start sm:items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap mb-3">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border ${status.bgColor} ${status.textColor} ${status.borderColor}`}>
@@ -288,7 +288,7 @@ function ClaimCard({ claim }: { claim: any }) {
             {date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })} at {date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
           </p>
         </div>
-        <div className="text-right flex-shrink-0">
+        <div className="text-left sm:text-right flex-shrink-0 w-full sm:w-auto">
           {claim.status === 'PAID' && claim.payoutAmount > 0 ? (
             <p className="text-2xl font-bold text-emerald-600">Rs. {claim.payoutAmount}</p>
           ) : (
@@ -396,7 +396,7 @@ export default function Claims() {
     <main className="min-h-screen bg-stone-50 text-stone-900">
       {/* Navigation */}
       <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-stone-100">
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center gap-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-4">
           <button
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-700 transition cursor-pointer"
@@ -410,9 +410,9 @@ export default function Claims() {
         </div>
       </nav>
 
-      <div className="max-w-4xl mx-auto px-6 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         {/* Stats Bar */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-8">
           {[
             { label: 'Total Claims', value: stats.total, color: 'text-stone-900' },
             { label: 'Approved', value: stats.paid, color: 'text-emerald-600' },

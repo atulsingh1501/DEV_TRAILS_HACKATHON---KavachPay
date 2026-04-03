@@ -7,7 +7,7 @@ const API = 'http://localhost:5000';
 function PayoutCard({ payout }: { payout: any }) {
   const date = new Date(payout.createdAt);
   return (
-    <div className="bg-white border border-emerald-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 flex items-center gap-5">
+    <div className="bg-white border border-emerald-100 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-5">
       {/* Icon */}
       <div className="w-12 h-12 flex-shrink-0 rounded-full bg-emerald-100 flex items-center justify-center">
         <CheckCircle2 className="w-6 h-6 text-emerald-600" />
@@ -36,7 +36,7 @@ function PayoutCard({ payout }: { payout: any }) {
       </div>
 
       {/* Amount */}
-      <div className="text-right flex-shrink-0">
+      <div className="text-left sm:text-right flex-shrink-0 w-full sm:w-auto">
         <p className="text-xl font-black text-emerald-600">₹{payout.payoutAmount}</p>
         <p className="text-xs text-emerald-500 font-semibold uppercase tracking-wide">Paid</p>
       </div>
@@ -61,14 +61,14 @@ export default function Payout() {
   }, [navigate]);
 
   return (
-    <main className="min-h-screen bg-[#eef2f6] text-slate-900 p-6 sm:p-10">
+    <main className="min-h-screen bg-[#eef2f6] text-slate-900 p-4 sm:p-6 lg:p-10">
       {/* Background blobs */}
       <div className="fixed top-[-10%] right-[-10%] w-[35%] h-[35%] rounded-full bg-emerald-300 opacity-15 blur-[120px] pointer-events-none" />
       <div className="fixed bottom-[-10%] left-[-10%] w-[35%] h-[35%] rounded-full bg-blue-400 opacity-15 blur-[120px] pointer-events-none" />
 
       <div className="max-w-2xl mx-auto relative z-10">
         {/* Header */}
-        <header className="flex items-center gap-4 mb-8">
+        <header className="flex flex-col sm:flex-row sm:items-center gap-4 mb-8">
           <button
             onClick={() => navigate('/dashboard')}
             className="p-2 rounded-xl bg-white shadow-sm border border-slate-100 text-slate-500 hover:text-blue-600 hover:border-blue-200 transition cursor-pointer"
@@ -98,13 +98,13 @@ export default function Payout() {
         ) : (
           <>
             {/* Summary Cards */}
-            <div className="grid grid-cols-3 gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
               <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 text-center">
                 <ClipboardList className="w-5 h-5 text-blue-400 mx-auto mb-1" />
                 <p className="text-2xl font-black text-blue-700">{data.count}</p>
                 <p className="text-xs text-slate-400 font-semibold">Total Payouts</p>
               </div>
-              <div className="col-span-2 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-5 shadow-lg text-white text-center relative overflow-hidden">
+              <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-5 shadow-lg text-white text-center relative overflow-hidden sm:col-span-2">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_80%_20%,white,transparent)]" />
                 <BadgeIndianRupee className="w-5 h-5 mx-auto mb-1 opacity-80" />
                 <p className="text-3xl font-black">₹{data.totalPaid}</p>

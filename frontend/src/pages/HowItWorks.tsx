@@ -155,11 +155,11 @@ export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900 font-sans relative overflow-hidden">
       {/* Background Logo Watermark - Adjusted for visibility */}
-      <div className="fixed inset-0 pointer-events-none flex items-center justify-center opacity-[0.06] -z-10">
+      <div className="fixed inset-0 pointer-events-none hidden sm:flex items-center justify-center opacity-[0.06] -z-10">
         <img
           src="/KavachPay_logo.png"
           alt=""
-          className="w-[800px] h-[800px] object-contain select-none scale-125"
+          className="w-[420px] h-[420px] lg:w-[800px] lg:h-[800px] object-contain select-none scale-125"
         />
       </div>
       {/* Navigation */}
@@ -189,7 +189,7 @@ export default function HowItWorks() {
       </header>
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden py-20 lg:py-28">
+      <section className="relative overflow-hidden py-16 sm:py-20 lg:py-28">
         {/* Background */}
         <div className="absolute inset-0 -z-10">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-emerald-100 rounded-full blur-3xl opacity-40" />
@@ -225,7 +225,7 @@ export default function HowItWorks() {
           </div>
 
           {/* Process Cards */}
-          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             {mainProcess.map((step, idx) => {
               const Icon = step.icon;
               const isActive = activeStep === idx;
@@ -235,7 +235,7 @@ export default function HowItWorks() {
                   key={idx}
                   onClick={() => setActiveStep(idx)}
                   onMouseEnter={() => setActiveStep(idx)}
-                  className={`text-left rounded-3xl border-2 p-8 transition-all duration-300 cursor-pointer ${isActive
+                  className={`text-left rounded-3xl border-2 p-6 sm:p-8 transition-all duration-300 cursor-pointer ${isActive
                       ? `${step.color} shadow-xl`
                       : 'bg-white border-stone-200 hover:border-stone-300 hover:shadow-md'
                     }`}
@@ -279,7 +279,7 @@ export default function HowItWorks() {
           </div>
 
           {/* Flow Diagram */}
-          <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-stone-200 p-8 lg:p-12 shadow-sm">
+          <div className="max-w-3xl mx-auto bg-white rounded-3xl border border-stone-200 p-6 sm:p-8 lg:p-12 shadow-sm">
             <div className="space-y-8">
               {flowSteps.map((step, idx) => {
                 const Icon = step.icon;
@@ -319,7 +319,7 @@ export default function HowItWorks() {
           </div>
 
           {/* Feature Grid */}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             {keyFeatures.map((feature, idx) => {
               const Icon = feature.icon;
               return (
@@ -343,7 +343,7 @@ export default function HowItWorks() {
       <section className="py-20 bg-stone-50/40 backdrop-blur-sm relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-gradient-to-br from-emerald-50 to-cyan-50 rounded-3xl border border-emerald-200 p-8 lg:p-12">
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div>
                 <p className="text-sm font-semibold text-emerald-600 uppercase tracking-wide mb-3">Example</p>
                 <h2 className="text-3xl font-bold text-stone-900 mb-6">See Your Benefit in Action</h2>

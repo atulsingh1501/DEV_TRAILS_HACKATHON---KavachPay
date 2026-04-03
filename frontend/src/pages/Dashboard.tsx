@@ -217,7 +217,7 @@ const Dashboard: React.FC = () => {
     <main className="min-h-screen bg-stone-50 text-stone-900">
       {/* Top Navigation */}
       <nav className="sticky top-0 z-30 bg-white/80 backdrop-blur-xl border-b border-stone-100">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button onClick={() => navigate('/')} className="flex items-center gap-2 cursor-pointer">
             <img 
               src="/KavachPay_logo.png" 
@@ -227,7 +227,7 @@ const Dashboard: React.FC = () => {
             <span className="text-xl font-bold tracking-tight">KavachPay</span>
           </button>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 self-end sm:self-auto">
             <button className="p-2.5 rounded-xl bg-stone-100 text-stone-500 hover:bg-stone-200 transition cursor-pointer">
               <Bell className="w-5 h-5" />
             </button>
@@ -244,12 +244,12 @@ const Dashboard: React.FC = () => {
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         {/* Welcome Section */}
         <section className="mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-stone-900 mb-1">
+              <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 mb-1">
                 Welcome back, {profile.fullName.split(' ')[0]}
               </h1>
               <p className="text-stone-500">Here&apos;s an overview of your protection status</p>
@@ -264,7 +264,7 @@ const Dashboard: React.FC = () => {
         </section>
 
         {/* Stats Grid */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-2xl p-5 border border-stone-100 shadow-sm">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
@@ -310,7 +310,7 @@ const Dashboard: React.FC = () => {
         {/* Main Content Grid */}
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Work-Proof Protocol Card */}
-          <div className="lg:col-span-2 bg-white rounded-3xl p-6 border border-stone-100 shadow-sm">
+          <div className="lg:col-span-2 bg-white rounded-3xl p-5 sm:p-6 border border-stone-100 shadow-sm">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
                 <img 
@@ -356,7 +356,7 @@ const Dashboard: React.FC = () => {
           </div>
 
           {/* Policy Card */}
-          <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-3xl p-6 text-white">
+          <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-3xl p-5 sm:p-6 text-white">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
                 <ShieldCheck className="w-6 h-6 text-emerald-400" />
@@ -397,7 +397,7 @@ const Dashboard: React.FC = () => {
         </div>
 
         {/* Quick Navigation */}
-        <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           <button
             onClick={() => navigate('/claims')}
             className="group bg-white rounded-2xl p-5 border border-stone-100 shadow-sm hover:border-emerald-200 hover:shadow-md transition text-left cursor-pointer"
@@ -471,7 +471,7 @@ const Dashboard: React.FC = () => {
                   {latestClaim.status}
                 </span>
               </div>
-              <div className="grid sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <p className="text-xs text-stone-400 uppercase font-semibold mb-1">Trigger</p>
                   <p className="text-sm font-medium text-stone-700">{latestClaim.triggerEvent.replace(/_/g, ' ')}</p>
@@ -494,8 +494,8 @@ const Dashboard: React.FC = () => {
       {isProfileOpen && (
         <div className="fixed inset-0 z-50 flex justify-end">
           <div className="absolute inset-0 bg-black/20 backdrop-blur-sm" onClick={() => setIsProfileOpen(false)}></div>
-          <div className="relative w-full max-w-sm bg-white shadow-2xl h-full overflow-y-auto">
-            <div className="p-6">
+          <div className="relative w-full max-w-full sm:max-w-sm bg-white shadow-2xl h-full overflow-y-auto">
+            <div className="p-4 sm:p-6">
               <div className="flex items-center justify-between mb-8">
                 <h2 className="text-xl font-bold text-stone-900">Profile</h2>
                 <button onClick={() => setIsProfileOpen(false)} className="p-2 rounded-xl bg-stone-100 hover:bg-stone-200 transition cursor-pointer">
@@ -556,9 +556,9 @@ const Dashboard: React.FC = () => {
 
       {/* Policy Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowModal(false)}></div>
-          <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center">
+          <div className="relative bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl max-w-md w-full p-6 sm:p-8 text-center">
             <div className="w-16 h-16 mx-auto bg-amber-100 rounded-full flex items-center justify-center mb-6">
               <ShieldAlert className="w-8 h-8 text-amber-600" />
             </div>
