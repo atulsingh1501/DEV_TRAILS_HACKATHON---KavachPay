@@ -351,7 +351,7 @@ const Policy = () => {
         return;
       }
       try {
-        const response = await fetch('http://localhost:5000/api/policy', {
+        const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/policy`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -372,7 +372,7 @@ const Policy = () => {
       const token = localStorage.getItem('kavachpay_token');
 
       if (planTier === 'BASIC') {
-        const freeRes = await fetch('http://localhost:5000/api/policy/activate-free', {
+        const freeRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/policy/activate-free`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         });
@@ -386,7 +386,7 @@ const Policy = () => {
         return;
       }
       
-      const orderRes = await fetch('http://localhost:5000/api/policy/order', {
+      const orderRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/policy/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ planTier })
@@ -415,7 +415,7 @@ const Policy = () => {
         order_id: orderData.order.id,
         handler: async function (response: any) {
           try {
-            const verifyRes = await fetch('http://localhost:5000/api/policy/verify', {
+            const verifyRes = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/policy/verify`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
               body: JSON.stringify({
