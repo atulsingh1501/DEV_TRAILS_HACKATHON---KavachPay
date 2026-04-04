@@ -330,6 +330,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ShieldCheck, CloudLightning, AlertTriangle, CloudRain, Sun, Wind, Umbrella, ArrowLeft, Check, Zap } from 'lucide-react';
+import API_BASE_URL from '../lib/api';
 
 declare global {
   interface Window {
@@ -351,7 +352,7 @@ const Policy = () => {
         return;
       }
       try {
-        const response = await fetch('http://localhost:5000/api/policy', {
+        const response = await fetch(`${API_BASE_URL}/api/policy`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -372,7 +373,7 @@ const Policy = () => {
       const token = localStorage.getItem('kavachpay_token');
 
       if (planTier === 'BASIC') {
-        const freeRes = await fetch('http://localhost:5000/api/policy/activate-free', {
+        const freeRes = await fetch(`${API_BASE_URL}/api/policy/activate-free`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
         });
@@ -386,7 +387,7 @@ const Policy = () => {
         return;
       }
       
-      const orderRes = await fetch('http://localhost:5000/api/policy/order', {
+      const orderRes = await fetch(`${API_BASE_URL}/api/policy/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ planTier })
@@ -406,6 +407,11 @@ const Policy = () => {
         return;
       }
 
+      if (!window.Razorpay) {
+        alert('Payment SDK not loaded. Please refresh and try again.');
+        return;
+      }
+
       const options = {
         key: orderData.key_id, 
         amount: orderData.order.amount, 
@@ -415,7 +421,7 @@ const Policy = () => {
         order_id: orderData.order.id,
         handler: async function (response: any) {
           try {
-            const verifyRes = await fetch('http://localhost:5000/api/policy/verify', {
+            const verifyRes = await fetch(`${API_BASE_URL}/api/policy/verify`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
               body: JSON.stringify({

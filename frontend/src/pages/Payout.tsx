@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Wallet, CheckCircle2, TrendingUp, BadgeIndianRupee, ClipboardList } from 'lucide-react';
-
-const API = 'http://localhost:5000';
+import API_BASE_URL from '../lib/api';
 
 function PayoutCard({ payout }: { payout: any }) {
   const date = new Date(payout.createdAt);
@@ -53,7 +52,7 @@ export default function Payout() {
     const token = localStorage.getItem('kavachpay_token');
     if (!token) { navigate('/signin'); return; }
 
-    fetch(`${API}/api/claim/payouts`, { headers: { Authorization: `Bearer ${token}` } })
+    fetch(`${API_BASE_URL}/api/claim/payouts`, { headers: { Authorization: `Bearer ${token}` } })
       .then(r => r.json())
       .then(setData)
       .catch(console.error)
