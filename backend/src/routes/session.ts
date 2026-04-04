@@ -18,13 +18,20 @@ router.post('/heartbeat', authMiddleware, async (req: AuthRequest, res: Response
     const now = new Date();
     const thirtyMinsAgo = new Date(now.getTime() - 30 * 60000);
 
-    // Find the most recent active session for this user (active within last 15 mins)
+    // Find the most recent active session for this user in the recent window.
+    // Older buggy rows may have null endTime, so we also allow recent startTime for null endTime records.
     let session = await prisma.workSession.findFirst({
       where: {
         userId: userId,
-        endTime: { gte: thirtyMinsAgo }
+        OR: [
+          { endTime: { gte: thirtyMinsAgo } },
+          {
+            endTime: null,
+            startTime: { gte: thirtyMinsAgo },
+          },
+        ],
       },
-      orderBy: { endTime: 'desc' }
+      orderBy: { startTime: 'desc' }
     });
 
     if (!session) {
@@ -36,6 +43,7 @@ router.post('/heartbeat', authMiddleware, async (req: AuthRequest, res: Response
         data: {
           userId,
           startTime: now,
+          endTime: now,
           activeMinutes: 1,
           ipAddress,
           ipCity,

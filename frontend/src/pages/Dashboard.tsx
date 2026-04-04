@@ -8,9 +8,17 @@ import API_BASE_URL from '../lib/api';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<any>(() => {
+    try {
+      const cached = localStorage.getItem('kavachpay_user');
+      return cached ? JSON.parse(cached) : null;
+    } catch {
+      return null;
+    }
+  });
   const [policy, setPolicy] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -42,9 +50,41 @@ const Dashboard: React.FC = () => {
     }
 
     const fetchData = async () => {
+      const authHeaders = { 'Authorization': `Bearer ${token}` };
+
+      const fetchProfileWithRetry = async () => {
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          try {
+            const profileRes = await fetch(`${API_BASE_URL}/api/user/profile`, {
+              headers: authHeaders
+            });
+
+            if (profileRes.status === 401 || profileRes.status === 403) {
+              localStorage.removeItem('kavachpay_token');
+              localStorage.removeItem('kavachpay_user');
+              navigate('/signin');
+              return;
+            }
+
+            if (profileRes.ok) {
+              const profileData = await profileRes.json();
+              setProfile(profileData);
+              localStorage.setItem('kavachpay_user', JSON.stringify(profileData));
+              return;
+            }
+          } catch (err) {
+            if (attempt === 0) {
+              await new Promise((resolve) => setTimeout(resolve, 300));
+              continue;
+            }
+            throw err;
+          }
+        }
+      };
+
       try {
         const policyRes = await fetch(`${API_BASE_URL}/api/policy`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: authHeaders
         });
         if (policyRes.ok) {
           const policyData = await policyRes.json();
@@ -52,16 +92,10 @@ const Dashboard: React.FC = () => {
           if (!policyData) setShowModal(true);
         }
 
-        const profileRes = await fetch(`${API_BASE_URL}/api/user/profile`, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-        if (profileRes.ok) {
-          const profileData = await profileRes.json();
-          setProfile(profileData);
-        }
+        await fetchProfileWithRetry();
 
         const claimRes = await fetch(`${API_BASE_URL}/api/claim/history`, {
-          headers: { 'Authorization': `Bearer ${token}` }
+          headers: authHeaders
         });
         if (claimRes.ok) {
           const claims = await claimRes.json();
@@ -75,7 +109,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [navigate]);
+  }, [navigate, refreshKey]);
 
   useEffect(() => {
     const token = localStorage.getItem('kavachpay_token');
@@ -108,6 +142,7 @@ const Dashboard: React.FC = () => {
         });
         if (response.ok) {
           const remoteStats = await response.json();
+          setSessionActiveMinutes(remoteStats.activeMinutes || 0);
           setActivityStats({
             ...remoteStats,
             localInteractions: interactionsCountRef.current,
@@ -206,6 +241,9 @@ const Dashboard: React.FC = () => {
         <div className="text-center">
           <ShieldAlert className="w-16 h-16 text-rose-400 mx-auto mb-4" />
           <p className="text-rose-500 font-medium text-lg">Failed to load profile</p>
+          <button onClick={() => { setLoading(true); setRefreshKey((v) => v + 1); }} className="mt-4 px-6 py-2 bg-stone-200 text-stone-800 rounded-full font-medium hover:bg-stone-300 transition cursor-pointer">
+            Retry
+          </button>
           <button onClick={() => navigate('/signin')} className="mt-4 px-6 py-2 bg-stone-900 text-white rounded-full font-medium hover:bg-stone-800 transition cursor-pointer">
             Sign In Again
           </button>
