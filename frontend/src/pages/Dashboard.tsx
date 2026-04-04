@@ -4,6 +4,7 @@ import {
   ShieldAlert, X, User, Phone, MapPin, Bike, Briefcase, Wallet, LogOut, ShieldCheck, TrendingUp,
   Activity, Cloud, Zap, ChevronRight, Clock, Settings, Bell
 } from 'lucide-react';
+import API_BASE_URL from '../lib/api';
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ const Dashboard: React.FC = () => {
 
     const fetchData = async () => {
       try {
-        const policyRes = await fetch('http://localhost:5000/api/policy', {
+        const policyRes = await fetch(`${API_BASE_URL}/api/policy`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (policyRes.ok) {
@@ -51,7 +52,7 @@ const Dashboard: React.FC = () => {
           if (!policyData) setShowModal(true);
         }
 
-        const profileRes = await fetch('http://localhost:5000/api/user/profile', {
+        const profileRes = await fetch(`${API_BASE_URL}/api/user/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (profileRes.ok) {
@@ -59,7 +60,7 @@ const Dashboard: React.FC = () => {
           setProfile(profileData);
         }
 
-        const claimRes = await fetch('http://localhost:5000/api/claim/history', {
+        const claimRes = await fetch(`${API_BASE_URL}/api/claim/history`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (claimRes.ok) {
@@ -102,7 +103,7 @@ const Dashboard: React.FC = () => {
 
     const refreshActivityStats = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/session/activity-stats', {
+        const response = await fetch(`${API_BASE_URL}/api/session/activity-stats`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         if (response.ok) {
@@ -126,7 +127,7 @@ const Dashboard: React.FC = () => {
       }
 
       try {
-        const response = await fetch('http://localhost:5000/api/session/heartbeat', {
+        const response = await fetch(`${API_BASE_URL}/api/session/heartbeat`, {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -167,7 +168,7 @@ const Dashboard: React.FC = () => {
 
     setIsSimulating(true);
     try {
-      const response = await fetch('http://localhost:5000/api/claim/simulate-disruption', {
+      const response = await fetch(`${API_BASE_URL}/api/claim/simulate-disruption`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       });

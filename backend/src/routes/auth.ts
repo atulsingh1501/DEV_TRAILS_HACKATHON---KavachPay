@@ -8,6 +8,32 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 const BREVO_API_KEY = process.env.BREVO_API_KEY || '';
 const BREVO_SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'no-reply@kavachpay.com';
 
+const sendOtpEmail = async (email: string, subject: string, htmlContent: string) => {
+  if (!BREVO_API_KEY) {
+    throw new Error('Email service is not configured.');
+  }
+
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'api-key': BREVO_API_KEY,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    },
+    body: JSON.stringify({
+      sender: { name: 'KavachPay Security', email: BREVO_SENDER_EMAIL },
+      to: [{ email }],
+      subject,
+      htmlContent
+    })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Brevo email send failed: ${response.status} ${errorText}`);
+  }
+};
+
 // 1. Send OTP via Brevo Email
 router.post('/send-otp', async (req: Request, res: Response) => {
   try {
@@ -45,34 +71,29 @@ router.post('/send-otp', async (req: Request, res: Response) => {
       }
     });
 
-    // Send via Brevo SMTP (Background task for speed)
-    if (BREVO_API_KEY) {
-      fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': BREVO_API_KEY,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: 'KavachPay Security', email: BREVO_SENDER_EMAIL },
-          to: [{ email: email }],
-          subject: `${otp} is your KavachPay verification code`,
-          htmlContent: `
-            <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #1e3a8a; text-align: center;">KavachPay Verification</h2>
-              <p style="color: #475569; font-size: 16px; line-height: 1.5;">Hello,</p>
-              <p style="color: #475569; font-size: 16px; line-height: 1.5;">To complete your registration, please use the following unique verification code:</p>
-              <div style="background: #f1f5f9; padding: 15px; text-align: center; border-radius: 8px; margin: 20px 0;">
-                <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${otp}</span>
-              </div>
-              <p style="color: #ef4444; font-size: 14px; font-weight: 500;">Note: This code will expire in 60 seconds.</p>
-              <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
-              <p style="color: #94a3b8; font-size: 12px; text-align: center;">If you didn't request this, you can safely ignore this email.</p>
-            </div>
-          `
-        })
-      }).catch(err => console.error('Background Email Error (Registration):', err));
+    const otpHtml = `
+      <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <h2 style="color: #1e3a8a; text-align: center;">KavachPay Verification</h2>
+        <p style="color: #475569; font-size: 16px; line-height: 1.5;">Hello,</p>
+        <p style="color: #475569; font-size: 16px; line-height: 1.5;">To complete your registration, please use the following unique verification code:</p>
+        <div style="background: #f1f5f9; padding: 15px; text-align: center; border-radius: 8px; margin: 20px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${otp}</span>
+        </div>
+        <p style="color: #ef4444; font-size: 14px; font-weight: 500;">Note: This code will expire in 60 seconds.</p>
+        <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 20px 0;">
+        <p style="color: #94a3b8; font-size: 12px; text-align: center;">If you didn't request this, you can safely ignore this email.</p>
+      </div>
+    `;
+
+    try {
+      await sendOtpEmail(email, `${otp} is your KavachPay verification code`, otpHtml);
+    } catch (emailError) {
+      await prisma.otpVerification.deleteMany({
+        where: { email, otpCode: otp, verified: false }
+      });
+      console.error('Registration OTP email failed:', emailError);
+      res.status(500).json({ error: 'Failed to send OTP email. Please try again.' });
+      return;
     }
 
     res.json({ message: 'OTP sent successfully' });
@@ -159,30 +180,26 @@ router.post('/login-send-otp', async (req: Request, res: Response) => {
       }
     });
 
-    if (BREVO_API_KEY) {
-      fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': BREVO_API_KEY,
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: 'KavachPay Login', email: BREVO_SENDER_EMAIL },
-          to: [{ email: email }],
-          subject: `${otp} is your login code`,
-          htmlContent: `
-            <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
-              <h2 style="color: #1e3a8a; text-align: center;">KavachPay Login</h2>
-              <p style="color: #475569;">You requested a login code. Use the code below to sign in:</p>
-              <div style="background: #f1f5f9; padding: 15px; text-align: center; border-radius: 8px; margin: 20px 0;">
-                <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${otp}</span>
-              </div>
-              <p style="color: #ef4444; font-size: 14px;">Valid for 60 seconds.</p>
-            </div>
-          `
-        })
-      }).catch(err => console.error('Background Email Error (Login):', err));
+    const otpHtml = `
+      <div style="font-family: sans-serif; max-width: 500px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px;">
+        <h2 style="color: #1e3a8a; text-align: center;">KavachPay Login</h2>
+        <p style="color: #475569;">You requested a login code. Use the code below to sign in:</p>
+        <div style="background: #f1f5f9; padding: 15px; text-align: center; border-radius: 8px; margin: 20px 0;">
+          <span style="font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #1e3a8a;">${otp}</span>
+        </div>
+        <p style="color: #ef4444; font-size: 14px;">Valid for 60 seconds.</p>
+      </div>
+    `;
+
+    try {
+      await sendOtpEmail(email, `${otp} is your login code`, otpHtml);
+    } catch (emailError) {
+      await prisma.otpVerification.deleteMany({
+        where: { email, otpCode: otp, verified: false }
+      });
+      console.error('Login OTP email failed:', emailError);
+      res.status(500).json({ error: 'Failed to send login code. Please try again.' });
+      return;
     }
 
     res.json({ message: 'Login OTP sent!' });
