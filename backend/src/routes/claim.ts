@@ -14,6 +14,7 @@ import {
 import { creditTreasury, debitTreasury } from '../services/treasuryService.js';
 import { isIpCityMatch } from '../services/ipIntel.js';
 import crypto from 'crypto';
+import { JWT_SECRET } from '../config.js';
 
 const router = express.Router();
 
@@ -108,8 +109,7 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
       behavioralScore = behaviorReport.score;
 
       // PILLAR 3: Cryptographic Audit of the entire chain
-      // Read JWT_SECRET here (not at module level) to ensure dotenv has run
-      const JWT_SECRET = process.env.JWT_SECRET || 'kavach_pay_secret_zero_trust_2026';
+      // Uses centralized JWT_SECRET for consistency
       let runningHash = '';
       for (let i = 0; i < latestSession.heartbeats.length; i++) {
         const hb = latestSession.heartbeats[i];

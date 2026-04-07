@@ -1,10 +1,10 @@
 import express, { type Request, type Response } from 'express';
 import jwt from 'jsonwebtoken';
+import { randomInt } from 'crypto';
 import prisma from '../prismaClient.js';
+import { JWT_SECRET } from '../config.js';
 
 const router = express.Router();
-
-const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret';
 
 const sendOtpEmail = async (email: string, subject: string, htmlContent: string) => {
   // Read at call time (not module load time) so dotenv has already run
@@ -56,8 +56,8 @@ router.post('/send-otp', async (req: Request, res: Response) => {
       return;
     }
 
-    // Generate 6-digit OTP
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // Generate 6-digit OTP using cryptographically secure random number generator
+    const otp = randomInt(100000, 1000000).toString();
     
     // Invalidate previous unverified OTPs
     await prisma.otpVerification.deleteMany({
@@ -168,7 +168,7 @@ router.post('/login-send-otp', async (req: Request, res: Response) => {
       return;
     }
 
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = randomInt(100000, 1000000).toString();
     
     await prisma.otpVerification.deleteMany({
       where: { email, verified: false }

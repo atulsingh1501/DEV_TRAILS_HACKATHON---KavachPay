@@ -3,9 +3,9 @@ import crypto from 'crypto';
 import { authMiddleware, type AuthRequest } from '../middleware/authMiddleware.js';
 import prisma from '../prismaClient.js';
 import { resolveIpContext } from '../services/ipIntel.js';
+import { JWT_SECRET } from '../config.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'kavach_pay_secret_zero_trust_2026';
 
 router.post('/heartbeat', authMiddleware, async (req: AuthRequest, res: Response) => {
   try {
