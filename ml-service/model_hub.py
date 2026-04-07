@@ -594,4 +594,11 @@ class ModelHub:
         return 0.95    # all 4 = near-certain syndicate
 
 
-model_hub = ModelHub()
+_model_hub_instance = None
+
+def get_model_hub() -> ModelHub:
+    global _model_hub_instance
+    if _model_hub_instance is None:
+        _model_hub_instance = ModelHub()
+    return _model_hub_instance
+
