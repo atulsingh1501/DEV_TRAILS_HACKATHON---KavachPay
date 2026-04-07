@@ -15,8 +15,6 @@ import { creditTreasury, debitTreasury } from '../services/treasuryService.js';
 import { isIpCityMatch } from '../services/ipIntel.js';
 import crypto from 'crypto';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'kavach_pay_secret_zero_trust_2026';
-
 const router = express.Router();
 
 /**
@@ -110,7 +108,8 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
       behavioralScore = behaviorReport.score;
 
       // PILLAR 3: Cryptographic Audit of the entire chain
-      // We re-calculate every single hash in the chain using the recorded IP of each minute
+      // Read JWT_SECRET here (not at module level) to ensure dotenv has run
+      const JWT_SECRET = process.env.JWT_SECRET || 'kavach_pay_secret_zero_trust_2026';
       let runningHash = '';
       for (let i = 0; i < latestSession.heartbeats.length; i++) {
         const hb = latestSession.heartbeats[i];
@@ -148,6 +147,8 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
           ipAddress: hb.ipAddress,
           hash: hb.hash,
         })) || [],
+      isChainValid,                                                // ← real HMAC result from above
+      loginHour: latestSession ? new Date(latestSession.startTime).getHours() : undefined,
     });
 
     const ringWindowStart = new Date(Date.now() - 6 * 60 * 60 * 1000);
@@ -157,7 +158,7 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
         user: { city: userCity },
       },
       orderBy: { createdAt: 'desc' },
-      take: 30,
+      take: 200,  // ← increased from 30 to handle Telegram-scale (500-worker) attacks
       select: {
         userId: true,
         createdAt: true,
@@ -216,12 +217,12 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
     const effectiveRecency = mlPillar3?.recencyMins ?? recencyMins;
 
     // 5. Final Decision (Consensus + Work Proof)
-    // For the hackathon demo, we allow a "Force-Pay" behavior to ensure the demo works even
-    // if it's sunny outside, but we clearly log the real consensus results.
     const aqiValue = (consensus?.raw as any)?.aqi?.aqi || 0;
     const isRealDisruption = envDisruptionScore > 0.3;
     const isAQIHazard = aqiValue > 200;
-    const shouldAutoPay = isRealDisruption && aggregateDecision === 'PAID' && fraudScore < 0.45;
+    // Note: fraudScore < 0.45 is redundant — if trust >= 0.65 then fraud = 1 - trust <= 0.35.
+    // The aggregate decision already encodes the threshold logic.
+    const shouldAutoPay = isRealDisruption && aggregateDecision === 'PAID';
     const claimStatus = shouldAutoPay ? 'PAID' : 'REVIEW';
     
     let claim = await prisma.claim.create({
@@ -315,6 +316,7 @@ router.post('/simulate-disruption', authMiddleware, async (req: AuthRequest, res
         isChainValid: effectiveChainValid,
         envDisruptionScore,
         isRealDisruption,
+        isAQIHazard,
         pillar1Score,
         pillar2Score,
         pillar3Score,

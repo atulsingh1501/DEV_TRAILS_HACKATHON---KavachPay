@@ -27,6 +27,7 @@ interface Pillar3Response {
   isChainValid: boolean;
   ipMatch: boolean;
   recencyMins: number;
+  loginHour: number;
   score: number;
   confidence: string;
   algorithm: string;
@@ -99,6 +100,8 @@ export async function getPillar3SessionAuthenticity(payload: {
   registeredCity: string;
   observedIpCity?: string;
   heartbeats: Pillar3Heartbeat[];
+  loginHour?: number;         // hour of session start (0-23)
+  isChainValid?: boolean;     // result of backend HMAC chain verification
 }): Promise<Pillar3Response | null> {
   return postMl<Pillar3Response>('/api/pillar3/session-authenticity', payload);
 }

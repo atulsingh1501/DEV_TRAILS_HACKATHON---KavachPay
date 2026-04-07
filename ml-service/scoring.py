@@ -3,10 +3,10 @@ from __future__ import annotations
 from typing import Dict
 
 DEFAULT_WEIGHTS = {
-    "pillar1": 0.25,
-    "pillar2": 0.3,
-    "pillar3": 0.3,
-    "pillar4": 0.15,
+    "pillar1": 0.20,   # Bot detection — useful but jitter alone is a lighter signal
+    "pillar2": 0.35,   # Environmental — server-side, independent of worker device, hardest to fake
+    "pillar3": 0.30,   # Work-proof — chain + IP + active minutes + login_hour
+    "pillar4": 0.15,   # Ring detector — critical for Telegram syndicate scenarios
 }
 
 

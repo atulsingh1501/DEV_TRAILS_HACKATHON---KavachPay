@@ -47,6 +47,8 @@ class Pillar3Request(BaseModel):
     registeredCity: str
     observedIpCity: Optional[str] = None
     heartbeats: List[HeartbeatEvent] = Field(default_factory=list)
+    loginHour: Optional[int] = None          # hour-of-day (0-23); from sessionStartTime if omitted
+    isChainValid: Optional[bool] = None      # backend-computed HMAC chain result; True if not provided
 
 
 class RingClaimNode(BaseModel):
@@ -105,15 +107,19 @@ def pillar1_behavioral_auth(payload: Pillar1Request) -> Dict[str, Any]:
     avg_gap = _mean(intervals_ms)
     jitter_ms = _stddev(intervals_ms)
 
-    anomaly_score, is_anomaly = model_hub.predict_fraud_anomaly(avg_gap, jitter_ms, len(timestamps))
+    # Use login hour from first timestamp so the model can check peak-hour alignment
+    login_hour = timestamps[0].hour if timestamps else 12
+
+    anomaly_score, is_anomaly = model_hub.predict_fraud_anomaly(avg_gap, jitter_ms, len(timestamps), login_hour)
     score = max(0.0, min(1.0, 1 - anomaly_score))
 
     return {
         "score": round(score, 3),
         "isBot": bool(is_anomaly),
         "jitterMs": round(jitter_ms),
+        "loginHour": login_hour,
         "confidence": "BOT_DETECTED" if is_anomaly else "HUMAN_VERIFIED",
-        "algorithm": "IsolationForest + jitter features",
+        "algorithm": "IsolationForest + jitter + login_hour",
     }
 
 
@@ -264,24 +270,35 @@ def pillar3_session_authenticity(payload: Pillar3Request) -> Dict[str, Any]:
     registered = (payload.registeredCity or "").strip().lower()
     ip_match = (not observed) or observed == registered or observed in registered or registered in observed
 
-    # Chain validity is expected to be computed in backend using secret; here we infer consistency signal only.
-    chain_valid_proxy = len(ordered) >= 3
+    # Use backend-computed HMAC result if provided; fall back to heartbeat-count proxy only as last resort
+    if payload.isChainValid is not None:
+        chain_valid = payload.isChainValid
+    else:
+        chain_valid = len(ordered) >= 3   # proxy: at minimum 3 signed heartbeats present
+
+    # Use provided login hour or derive from session start time
+    if payload.loginHour is not None:
+        login_hour = int(payload.loginHour)
+    else:
+        login_hour = payload.sessionStartTime.hour
 
     score = model_hub.predict_work_proof(
         active_minutes=len(ordered),
         recency_mins=recency_mins,
         ip_match=ip_match,
-        chain_valid=chain_valid_proxy,
+        chain_valid=chain_valid,
         heartbeat_count=len(ordered),
+        login_hour=login_hour,
     )
 
     return {
-        "isChainValid": chain_valid_proxy,
+        "isChainValid": chain_valid,
         "ipMatch": ip_match,
         "recencyMins": round(recency_mins, 2),
+        "loginHour": login_hour,
         "score": round(score, 3),
         "confidence": "VALID" if score >= 0.7 else "REVIEW",
-        "algorithm": "GradientBoosting work-proof model",
+        "algorithm": "GradientBoosting work-proof + login_hour + chain_valid",
     }
 
 
@@ -313,7 +330,7 @@ def pillar4_ring_detect(payload: Pillar4Request) -> Dict[str, Any]:
             "ringRisk": 0.0,
             "isSuspiciousCluster": False,
             "clusterSize": len(claims),
-            "algorithm": "LogisticRegression ring detector",
+            "algorithm": "GNN (no-op: insufficient cluster size)",
         }
 
     subnets = [_ip_subnet(claim.ipAddress) for claim in claims]
@@ -326,11 +343,22 @@ def pillar4_ring_detect(payload: Pillar4Request) -> Dict[str, Any]:
     work_scores = [float(claim.workProofScore) for claim in claims]
     workproof_variance = float(np.var(work_scores)) if len(work_scores) > 1 else 0.0
 
+    # Build enriched node list for the GNN path
+    gnn_nodes = [
+        {
+            "ipSubnet": subnets[i],
+            "minuteBucket": minute_buckets[i],
+            "workProofScore": work_scores[i],
+        }
+        for i in range(len(claims))
+    ]
+
     ring_risk = model_hub.predict_ring_probability(
         ip_subnet_diversity=ip_subnet_diversity,
         timestamp_entropy=timestamp_entropy,
         workproof_variance=workproof_variance,
         cluster_size=len(claims),
+        claim_nodes=gnn_nodes,
     )
 
     return {
@@ -342,7 +370,7 @@ def pillar4_ring_detect(payload: Pillar4Request) -> Dict[str, Any]:
             "timestampEntropy": round(timestamp_entropy, 4),
             "workProofVariance": round(workproof_variance, 4),
         },
-        "algorithm": "LogisticRegression ring detector",
+        "algorithm": "PyTorch GCN fraud ring detector",
     }
 
 
